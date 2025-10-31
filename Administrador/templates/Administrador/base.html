@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Painel do Administrador - {% block title %}Dashboard{% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style-admin.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <div class="painel">
+      {% include "Administrador/components/navbar-admin.html" %}
+
+      <main class="conteudo">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

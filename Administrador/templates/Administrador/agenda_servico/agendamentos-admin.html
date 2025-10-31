@@ -1,0 +1,46 @@
+{% extends "Administrador/base.html" %}
+
+{% block content %}
+        <div class="conteudo">
+          <div class="header">
+            <h1>Agendamentos</h1>
+            <a href="{% url 'agendar-servico-admin' %}" class="btn-agendar">+ Novo Agendamento</a>
+          </div>
+      <main>
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Serviço</th>
+                <th>Mecânico</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for agendamento in agendamentos %}
+              <tr>
+                <td>{{ agendamento.cliente.nome_completo|default:agendamento.cliente.usuario.username }}</td>
+                <td>{{ agendamento.data_hora|date:"d/m/Y" }}</td>
+                <td>{{ agendamento.data_hora|time:"H:i" }}</td>
+                <td>{{ agendamento.servico.nome }}</td>
+                <td>{{ agendamento.mecanico.nome_completo|default:agendamento.mecanico.usuario.username|default:"Não atribuído" }}</td>
+                <td><span class="status {{ agendamento.status }}">{{ agendamento.status|capfirst }}</span></td>
+                <td>
+                  <a href="{% url 'editar_agendamento' agendamento.id %}" class="link edit">Editar</a>
+                  <a href="{% url 'cancelar_agendamento' agendamento.id %}" class="link delete" onclick="return confirm('Tem certeza que deseja cancelar este agendamento?')">Cancelar</a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7">Nenhum agendamento encontrado.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </main>
+    </div>
+  </div>
+{% endblock %}

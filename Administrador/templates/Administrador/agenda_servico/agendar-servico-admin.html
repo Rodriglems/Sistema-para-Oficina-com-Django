@@ -1,0 +1,139 @@
+{% extends "Administrador/base.html"%} {% block content%}
+<main class="content">
+  <h1>Agende seu Serviço</h1>
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
+  <form
+    method="post"
+    action="{% url 'agendar-servico-admin' %}"
+    class="agendamentos-table"
+  >
+    {% csrf_token %}
+
+    <label for="cliente">Cliente</label>
+    <select id="cliente" name="cliente" required class="form-control mb-2">
+      <option value="" disabled selected>Selecione um cliente</option>
+      {% for cliente in clientes %}
+      <option value="{{ cliente.id }}">
+        {{ cliente.nome_completo|default:cliente.usuario.username }}
+      </option>
+      {% endfor %}
+    </select>
+
+    <label for="mecanico">Mecânico (Opcional)</label>
+    <select id="mecanico" name="mecanico" class="form-control mb-2">
+      <option value="">Não atribuir mecânico</option>
+      {% for mecanico in mecanicos %}
+      <option value="{{ mecanico.id }}">
+        {{ mecanico.nome_completo|default:mecanico.usuario.username }} - {{ mecanico.especialidade }}
+      </option>
+      {% endfor %}
+    </select>
+
+    <label for="servico">Serviço</label>
+    <select id="servico" name="servico" required class="form-control mb-2" onchange="toggleOutroServico()">
+      <option value="" disabled selected>Selecione um serviço</option>
+      {% for servico in servicos %}
+      <option value="{{ servico.id }}">{{ servico.nome }}</option>
+      {% endfor %}
+      <option value="outro">Outro</option>
+    </select>
+
+    <div id="outro-servico-div" style="display: none;">
+      <label for="outro_servico">Digite o serviço desejado</label>
+      <input
+        type="text"
+        id="outro_servico"
+        name="outro_servico"
+        placeholder="Ex: Troca de corrente"
+        class="form-control mb-2"
+      />
+    </div>
+
+    <div class="form-group data-hora">
+      <div class="input-data">
+        <label for="descricao">Descrição</label>
+        <textarea name="descricao" rows="4" id="descricao" class="form-control"></textarea>
+      </div>
+    
+
+    <div class="form-group data-hora">
+      <div class="input-data">
+        <label for="data">Data</label>
+        <input
+          type="date"
+          id="data"
+          name="data"
+          required
+          class="form-control"
+          min="{% now 'Y-m-d' %}"
+        />
+      </div>
+      <div class="input-hora">
+        <label for="hora">Hora</label>
+        <input
+          type="time"
+          id="hora"
+          name="hora"
+          required
+          class="form-control mb-4"
+        />
+      </div>
+    </div>
+
+    <h3>Dados da Moto</h3>
+
+    <label for="marca">Marca da Moto</label>
+    <input
+      type="text"
+      id="marca"
+      name="marca"
+      placeholder="Ex: Honda"
+      required
+      class="form-control"
+    />
+
+    <label for="modelo">Modelo da Moto</label>
+    <input
+      type="text"
+      id="modelo"
+      name="modelo"
+      placeholder="Ex: CG 160 Titan"
+      required
+      class="form-control"
+    />
+
+    <label for="ano">Ano</label>
+    <input
+      type="number"
+      id="ano"
+      name="ano"
+      placeholder="Ex: 2022"
+      required
+      class="form-control mb-2"
+    />
+
+    <button type="submit" class="btn-agendar">Confirmar Agendamento</button>
+  </form>
+</main>
+
+<script>
+function toggleOutroServico() {
+  const servicoSelect = document.getElementById('servico');
+  const outroServicoDiv = document.getElementById('outro-servico-div');
+  const outroServicoInput = document.getElementById('outro_servico');
+  
+  if (servicoSelect.value === 'outro') {
+    outroServicoDiv.style.display = 'block';
+    outroServicoInput.required = true;
+  } else {
+    outroServicoDiv.style.display = 'none';
+    outroServicoInput.required = false;
+    outroServicoInput.value = '';
+  }
+}
+</script>
+
+{% endblock %}

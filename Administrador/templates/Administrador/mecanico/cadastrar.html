@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cadastrar Cliente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 24px;
+      }
+      .container {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .field {
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+      }
+      .errorlist {
+        color: #b00020;
+        margin: 4px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .non-field {
+        color: #b00020;
+        margin-bottom: 12px;
+      }
+      button {
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cadastrar Mecânico</h1>
+
+      <!-- Mostrar mensagens de erro -->
+      {% if messages %} {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %} {% endif %}
+
+      <!-- Mostrar erros do formulário -->
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'admin_criar_mecanico' %}">
+        {% csrf_token %}
+
+        <!-- Mostrar todos os campos com seus erros -->
+        {% for field in form %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }} {% if field.errors %}
+          <div class="field-errors">{{ field.errors }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit">Salvar Mecânico</button>
+      </form>
+    </div>
+  </body>
+</html>

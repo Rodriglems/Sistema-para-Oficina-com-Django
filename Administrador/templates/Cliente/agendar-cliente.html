@@ -1,0 +1,49 @@
+{% extends "Cliente/base.html"%} 
+{% block title %} Agendar Serviços {% endblock%}
+
+{% block content%}
+<main class="content">
+  <h1>Agende seu Serviço</h1>
+  <form method="post" action="{% url 'agendar-servico' %}" class="Agendamento-form">
+    {% csrf_token %}
+    
+    <label for="marca">Marca da Moto</label>
+    <input type="text" id="marca" name="marca" placeholder="Ex: Honda" required class="form-control" />
+
+    <label for="modelo">Modelo da Moto</label>
+    <input type="text" id="modelo" name="modelo" placeholder="Ex: CG 160 Titan" required class="form-control" />
+
+    <label for="ano">Ano</label>
+    <input type="number" id="ano" name="ano" placeholder="Ex: 2022" required class="form-control" />
+
+    <div class="form-group data-hora">
+      <div class="input-data">
+        <label for="data">Data</label>
+        <input type="date" id="data" name="data" required class="form-control" />
+      </div>
+      <div class="input-hora">
+        <label for="hora">Hora</label>
+        <input type="time" id="hora" name="hora" required class="form-control" />
+      </div>
+      <div>
+        <label for="servico">Serviço</label>
+        <select id="servico" name="servico" required class="form-control">
+          <option value="" disabled selected>Selecione um serviço</option>
+          <option value="Troca de óleo">Troca de óleo</option>
+          <option value="Revisão geral">Revisão geral</option>
+          <option value="Conserto de freios">Conserto de freios</option>
+          <option value="Alinhamento e balanceamento">Alinhamento e balanceamento</option>
+          <option value="Troca de pneus">Troca de pneus</option>
+          <option value="Instalação de acessórios">Instalação de acessórios</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="descricao">Descrição do Serviço</label>
+    <textarea id="descricao" name="descricao" rows="4" placeholder="Descreva o problema..." required class="form-control"></textarea>
+
+    <button type="submit" class="btn-agendar">Confirmar Agendamento</button>
+  </form>
+</main>
+{% endblock %}

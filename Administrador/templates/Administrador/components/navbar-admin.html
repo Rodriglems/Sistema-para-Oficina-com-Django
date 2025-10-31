@@ -1,0 +1,13 @@
+{% load static %}
+      <aside class="sidebar">
+        <h2><img src="{% static 'image/Logo.png' %}"/></h2>
+        <nav>
+          <a href="{% url 'dashboard-admin' %}">Dashboard</a>
+          <a href="{% url 'adm-cliente' %}">Clientes</a>
+          <a href="{% url 'adm-mecanico' %}">Mecânicos</a>
+          <a href="{% url 'adm-agendamentos' %}">Agendamentos</a>
+          <a href="#">Serviços</a>
+          <a href="#">Configurações</a>
+          <a href="{% url 'logout' %}">Sair</a>
+        </nav>
+      </aside>

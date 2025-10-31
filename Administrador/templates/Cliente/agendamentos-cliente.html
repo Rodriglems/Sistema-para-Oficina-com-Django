@@ -1,0 +1,23 @@
+{% extends "Cliente/base.html"%} {% block title %} Agendar Serviços {% endblock%}
+{% block content%}
+
+  <main class="agendamentos-table">
+  <h1>Agendamentos Atuais</h1>
+  {% for agendamento in agendamentos %}
+    <div class="card">
+      <p><strong>Modelo:</strong> {{ agendamento.moto.modelo }}</p>
+      <p><strong>Data:</strong> {{ agendamento.data_hora|date:"d/m/Y" }}</p>
+      <p><strong>Hora:</strong> {{ agendamento.data_hora|time:"H:i" }}</p>
+      <p><strong>Status:</strong> {{ agendamento.get_status_display }}</p>
+      <div class="botoes">
+        <button class="btn-cancelar">Cancelar</button>
+        <button class="btn-editar">Remarcar</button>
+      </div>
+    </div>
+  {% empty %}
+    <div class="alert-info">Nenhum agendamento encontrado.</div>
+  {% endfor %}
+</main>
+
+
+{% endblock %}

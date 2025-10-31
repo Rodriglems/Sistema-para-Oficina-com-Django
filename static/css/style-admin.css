@@ -1,0 +1,264 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+/* Variáveis CSS */
+:root {
+  --primary-color: #3b8d9e;
+  --secondary-color: #333;
+  --card-bg: #fff;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Corpo da página */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f6f9;
+  color: var(--secondary-color);
+  min-height: 100vh;
+}
+
+/* Container branco centralizado */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header com título e botão */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: #333;
+}
+
+/* Botão padrão */
+.btn-agendar {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
+.btn-agendar:hover {
+  background-color: darken(var(--primary-color), 5%);
+}
+
+/* Layout geral: painel com sidebar e conteúdo */
+.painel {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar lateral */
+.sidebar {
+  background-color: var(--primary-color);
+  color: #fff;
+  width: 220px;
+  padding: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.sidebar nav {
+  flex: 1;
+}
+
+.sidebar nav a {
+  display: block;
+  color: #ccc;
+  text-decoration: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.ativo {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Conteúdo principal */
+.conteudo {
+  flex: 1;
+  padding: 40px;
+  min-width: 0;
+}
+
+.conteudo h1 {
+  margin-bottom: 30px;
+}
+
+/* Cards */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  width: 250px;
+  min-width: 200px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Gráficos e áreas visuais */
+.grafico {
+  margin-top: 40px;
+}
+
+.grafico h2 {
+  margin-bottom: 20px;
+}
+
+.grafico-placeholder {
+  width: 100%;
+  height: 300px;
+  background-color: #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+img {
+  max-width: 180px;
+  height: auto;
+}
+
+/* Tabela de dados */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+  color: #555;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Links */
+.link {
+  margin-right: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link.edit {
+  color: #007bff;
+}
+
+.link.delete {
+  color: #dc3545;
+}
+
+.link.history,
+.link.schedule {
+  color: #28a745;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Badges de status para tabelas */
+.status {
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status.pendente { background-color: #ffc107; }
+.status.concluido { background-color: #28a745; }
+.status.cancelado { background-color: #dc3545; }
+.status.confirmado { background-color: #007bff; }
+.status.atrasado { background-color: #6c757d; }
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .painel {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .conteudo {
+    padding: 20px;
+  }
+  .cards {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .card {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar nav a {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+}

@@ -1,0 +1,46 @@
+{% extends "Administrador/base.html" %} {% block content %}
+<div class="conteudo">
+  <main>
+    <div class="header">
+      <h1>Mecânicos</h1>
+      <a href="{% url 'admin_criar_mecanico' %}" class="btn-agendar"
+        >+ Novo Mecânico</a
+      >
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Especialidade</th>
+          <th>Telefone</th>
+          <th>Disponibilidade</th>
+          <th>Usuário</th>
+          <th>Senha</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mecanico in mecanicos %}
+        <tr>
+          <td>{{ mecanico.nome_completo }}</td>
+          <td>{{ mecanico.especialidade }}</td>
+          <td>{{ mecanico.telefone }}</td>
+          <td>{{ mecanico.disponibilidade }}</td>
+          <td>{{ mecanico.usuario.username }}</td>
+          <td>********</td>
+          <td>
+            <a
+              href="{% url 'admin_mecanico_editar' mecanico.id %}"
+              class="link edit"
+              >Editar</a
+            >
+            <a href="{% url 'excluir_mecanico' mecanico.id %}" class="link delete" onclick="return confirm('Tem certeza que deseja excluir esse usuario?')">Excluir</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</div>
+{% endblock %}

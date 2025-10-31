@@ -1,0 +1,55 @@
+<form method="post" class="form-control">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div>
+    <button type="submit">Registrar</button>
+  <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login aqui</a></p>
+  </div>
+  
+</form>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  form {
+    background: #fff;
+    padding: 20px;
+    margin: 50px auto;
+    width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+
+  button {
+    background-color: #27bd27;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-items: center;
+  }
+  button:hover {
+    background-color: #4cae4c;
+  }
+
+  label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+</style>

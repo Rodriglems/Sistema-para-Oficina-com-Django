@@ -1,0 +1,129 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #f4f4f4;
+  padding: 40px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.tarefas h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.info p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.status {
+  display: inline-block;
+  margin-left: 15px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  border-radius: 6px;
+}
+
+.status.pendente {
+  background-color: #ffc107;
+}
+
+.status.andamento {
+  background-color: #17a2b8;
+}
+
+.status.concluido {
+  background-color: #28a745;
+}
+ 
+
+.acoes {
+  margin-top: 15px;
+}
+
+.acoes textarea {
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+  resize: none;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.acoes button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.acoes button:hover {
+  background-color: #218838;
+}
+
+nav {
+  margin: 20px 0;
+}
+
+nav button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #ddd;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+nav button:hover {
+  background-color: #bbb;
+}
+
+.aba {
+  display: none;
+}
+
+.aba.ativa {
+  display: block;
+}

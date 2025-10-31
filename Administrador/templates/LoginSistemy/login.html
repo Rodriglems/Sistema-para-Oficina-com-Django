@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | MotoService</title>
+    <link rel="stylesheet" href="{% static 'css/style-login.css' %}" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box">
+        <img src="{% static 'image/Logo.png' %}" alt="" />
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+
+          <!-- Exibir mensagens do Django -->
+          {% if messages %} {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %} {% endif %} {% if error_message %}
+          <div class="error-message">{{ error_message }}</div>
+          {% endif %}
+          <label for="username">Usuário</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Digite seu Usuário"
+            required
+          />
+
+          <label for="senha">Senha</label>
+          <input
+            type="password"
+            id="senha"
+            name="senha"
+            placeholder="Digite sua senha"
+            required
+          />
+
+          <button type="submit" class="">Entrar</button>
+
+          <a href="#" class="forgot-password">Esqueceu a senha?</a>
+
+          <a href="{% url 'register' %}" class="register-button"
+            >Cadastrar-se como Cliente</a
+          >
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

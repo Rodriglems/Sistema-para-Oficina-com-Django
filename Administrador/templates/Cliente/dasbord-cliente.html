@@ -1,0 +1,40 @@
+{% extends "Cliente/base.html" %} {% block title %} Pagina Inicio {% endblock %}
+{% block content %}
+<h1>Bem-vindo, {{ request.user.username }}!</h1>
+
+      <section class="cards">
+  <div class="card">
+    <h2>Próximo Agendamento</h2>
+    {% with proximo_agendamento=agendamentos|first %}
+      {% if proximo_agendamento %}
+        <p><strong>Data:</strong> {{ proximo_agendamento.data_hora|date:"d/m/Y" }}</p>
+        <p><strong>Hora:</strong> {{ proximo_agendamento.data_hora|time:"H:i" }}</p>
+        <p><strong>Serviço:</strong> {{ proximo_agendamento.servico.nome }}</p>
+        <p><strong>Status:</strong> {{ proximo_agendamento.get_status_display }}</p>
+      {% else %}
+        <p>Nenhum agendamento futuro.</p>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="card">
+    <h2>Último Serviço</h2>
+    {% if ultimo_servico %}
+      <p><strong>Data:</strong> {{ ultimo_servico.data_hora|date:"d/m/Y" }}</p>
+      <p><strong>Serviço:</strong> {{ ultimo_servico.servico.nome }}</p>
+      <p><strong>Status:</strong> {{ ultimo_servico.get_status_display }}</p>
+    {% else %}
+      <p>Nenhum serviço finalizado.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Total de Serviços</h2>
+    <p><strong>Finalizados:</strong> {{ total_finalizados }}</p>
+    <p><strong>Cancelados:</strong> {{ total_cancelados }}</p>
+    <p><strong>Pendentes:</strong> {{ total_pendentes }}</p>
+  </div>
+</section>
+
+      <a href="{% url 'agendar-cliente' %}" class="btn-agendar">+ Novo Agendamento</a>
+{% endblock %}

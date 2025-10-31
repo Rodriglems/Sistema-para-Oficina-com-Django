@@ -1,0 +1,429 @@
+<div class="content">
+  <div class="container">
+    <h1>Ordens de Serviço</h1>
+
+    <!-- Resumo das ordens -->
+    <div class="summary-bar">
+      <div class="summary-item">
+        <span class="summary-number">{{ ordens_servico|length }}</span>
+        <span class="summary-label">Ordens de Serviço</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-number">{{ ordens_servico|length|add:0 }}</span>
+        <span class="summary-label">Total</span>
+      </div>
+    </div>
+
+    <!-- Botão para voltar -->
+    <div class="navigation-bar" style="margin-bottom: 20px">
+      <a href="{% url 'lista-servicos' %}" class="btn-back"
+        >← Voltar para Lista de Serviços</a
+      >
+      <a href="{% url 'agendar-servico' %}" class="btn-action"
+        >+ Nova Ordem de Serviço</a
+      >
+    </div>
+
+    <!-- Tabela de Ordens de Serviço -->
+    <div class="section">
+      <h2>
+        🔧 Ordens de Serviço  
+      </h2>
+
+      {% if not ordens_servico %}
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <strong>Informação:</strong> Não há ordens de serviço cadastradas ainda.
+        <br />As ordens de serviço são criadas automaticamente quando um
+        agendamento é processado. <br /><br />
+        <strong>Para criar uma ordem de serviço:</strong>
+        <ol style="margin-top: 10px; margin-left: 20px">
+          <li>
+            Primeiro crie um
+            <a href="{% url 'agendar-servico' %}" style="color: #3498db"
+              >agendamento</a
+            >
+          </li>
+          <li>A ordem de serviço será gerada automaticamente</li>
+          <li>O mecânico poderá então preencher os detalhes do serviço</li>
+        </ol>
+      </div>
+      {% endif %}
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Moto</th>
+            <th>Serviço</th>
+            <th>Problema</th>
+            <th>Custo</th>
+            <th>Status</th>
+            <th>Data Conclusão</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ordem in ordens_servico %}
+          <tr>
+            <td><strong>#{{ ordem.id }}</strong></td>
+            <td>{{ ordem.agendamento.cliente.usuario.username }}</td>
+            <td> {{ ordem.agendamento.moto.marca }} {{ ordem.agendamento.moto.modelo }} ({{ ordem.agendamento.moto.ano }}) </td>
+            <td><strong>{{ ordem.agendamento.servico.nome }}</strong></td>
+            <td>
+              <div class="problema-preview">
+                {{ ordem.descricao_problema|truncatewords:8|default:"Não especificado" }} 
+              </div>
+            </td>
+            <td class="custo">
+              {% if ordem.custo %} R$ {{ ordem.custo|floatformat:2 }} {% else %}
+              <span class="text-muted">A definir</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="status-badge status-{{ ordem.status }}">
+                {{ ordem.get_status_display }}
+              </span>
+            </td>
+            <td>
+              {% if ordem.data_conclusao %} {{ ordem.data_conclusao|date:"d/m/Y
+              H:i" }} {% else %}
+              <span class="text-muted">Pendente</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="action-buttons">
+                <a href="#" class="btn-detalhes">Ver Detalhes</a>
+                {% if ordem.status == 'pendente' %}
+                <a href="#" class="btn-edit">Editar</a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="9" class="no-data">
+              <i class="fas fa-clipboard-list"></i>
+              <strong>Nenhuma ordem de serviço encontrada.</strong>
+              <br />
+              <small
+                >Ordens de serviço são criadas automaticamente a partir dos
+                agendamentos.</small
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .content {
+    font-family: "Arial", sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    border-bottom: 3px solid #e67e22;
+    padding-bottom: 15px;
+  }
+
+  h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-left: 4px solid #e67e22;
+    padding-left: 15px;
+  }
+
+  .summary-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+  }
+
+  .summary-item {
+    text-align: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    transition: transform 0.2s ease;
+  }
+
+  .summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .summary-number {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    color: #e67e22;
+    margin-bottom: 5px;
+  }
+
+  .summary-label {
+    display: block;
+    font-size: 0.9em;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .navigation-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #ecf0f1;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .btn-back,
+  .btn-action {
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-back {
+    background: #95a5a6;
+    color: white;
+  }
+
+  .btn-back:hover {
+    background: #7f8c8d;
+    transform: translateX(-2px);
+  }
+
+  .btn-action {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    color: white;
+  }
+
+  .btn-action:hover {
+    background: linear-gradient(135deg, #d35400, #c0392b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .data-table thead {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    color: white;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+  }
+
+  .data-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+  }
+
+  .data-table tbody tr:hover {
+    background-color: #fdf2e9;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+    border-color: #e67e22;
+  }
+
+  .data-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+  .problema-preview {
+    max-width: 150px;
+    font-size: 0.9em;
+    line-height: 1.3;
+  }
+
+  .custo {
+    font-weight: bold;
+    color: #27ae60;
+  }
+
+  .no-data {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    padding: 30px !important;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .no-data i {
+    margin-right: 8px;
+    color: #e67e22;
+    font-size: 1.2em;
+  }
+
+  .text-muted {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.9em;
+  }
+
+  /* Status badges */
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-pendente {
+    background-color: #f39c12;
+    color: white;
+  }
+
+  .status-em_andamento {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .status-concluido {
+    background-color: #27ae60;
+    color: white;
+  }
+
+  .status-cancelado {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .btn-detalhes,
+  .btn-edit {
+    padding: 4px 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.8em;
+    transition: all 0.2s ease;
+  }
+
+  .btn-detalhes {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+  }
+
+  .btn-detalhes:hover {
+    background: linear-gradient(135deg, #2980b9, #1c6ea4);
+    transform: translateY(-1px);
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+  }
+
+  .btn-edit:hover {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    transform: translateY(-1px);
+  }
+
+  /* Alert styles */
+  .alert {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    background-color: #f8f9fa;
+  }
+
+  .alert-info {
+    border-left-color: #3498db;
+    background-color: #e8f4fd;
+    color: #2c3e50;
+  }
+
+  .alert i {
+    margin-right: 10px;
+    color: #3498db;
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+      margin: 10px;
+    }
+
+    h1 {
+      font-size: 1.8em;
+    }
+
+    .data-table {
+      font-size: 0.8em;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 8px 6px;
+    }
+
+    .navigation-bar {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+  }
+</style>

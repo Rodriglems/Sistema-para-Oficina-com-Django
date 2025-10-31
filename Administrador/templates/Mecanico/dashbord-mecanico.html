@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel do Mecânico</title>
+  <link rel="stylesheet" href="painel-mecanico.css">
+</head>
+<body>
+  {% block navbar %}
+    <ul>
+      <li><a href="{% url 'base' %}">Dashboard</a></li>
+      <li><a href="{% url 'historico-cliente' %}">Meus Históricos</a></li>
+      <li><a href="{% url 'agendamentos-cliente' %}">Agendamento</a></li>
+      <li><a class="logout-button" href="{% url 'login' %}">Sair</a></li>
+    </ul>
+    {% endblock %}
+  <div class="container">
+    <header>
+      <h1>Painel do Mecânico</h1>
+      <nav>
+        <button onclick="mostrarAba('tarefas')">Minhas Tarefas</button>
+        <button onclick="mostrarAba('historico')">Histórico</button>
+      </nav>
+    </header>
+
+    <section id="tarefas" class="aba ativa">
+      <h2>Minhas Tarefas</h2>
+      <ul>
+        <li>
+          <div class="info">
+            <strong>Serviço:</strong> Troca de óleo  
+            <span class="status pendente">Pendente</span>
+            <p><strong>Moto:</strong> Honda CG 160 - Placa: OIX-1234 - Ano: 2020</p>
+            <p><strong>Descrição:</strong> Motor superaquecendo.</p>
+            <p><strong>Histórico:</strong> Troca de vela - 10/05/2025</p>
+          </div>
+          <div class="acoes">
+            <textarea placeholder="Observações..."></textarea>
+            <button>Marcar como Concluído</button>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="historico" class="aba">
+      <h2>Histórico </h2>
+      <ul>
+        <li>
+          <div class="info">
+            <strong>Serviço:</strong> Alinhamento de roda  
+            <span class="status concluido">Concluído</span>
+            <p><strong>Moto:</strong> Yamaha Factor - Placa: NBY-5678 - Ano: 2019</p>
+            <p><strong>Descrição:</strong> Vibração no guidão.</p>
+            <p><strong>Observações:</strong> Rodas desbalanceadas. Serviço concluído com sucesso.</p>
+            <p><strong>Data:</strong> 12/05/2025</p>
+          </div>
+        </li>
+        <li>
+          <div class="info">
+            <strong>Serviço:</strong> Troca de pastilhas de freio  
+            <span class="status concluido">Concluído</span>
+            <p><strong>Moto:</strong> Suzuki GSX-R 750 - Placa: ABC-9876 - Ano: 2021</p>
+            <p><strong>Descrição:</strong> Barulho ao frear.</p>
+            <p><strong>Observações:</strong> Pastilhas desgastadas. Serviço concluído com sucesso.</p>
+            <p><strong>Data:</strong> 10/05/2025</p>
+          </div>
+        </li>
+        <li>
+          <div class="info">
+            <strong>Serviço:</strong> Troca de óleo  
+            <span class="status concluido">Concluído</span>
+            <p><strong>Moto:</strong> Kawasaki Ninja - Placa: DEF-5432 - Ano: 2022</p>
+            <p><strong>Descrição:</strong> Óleo velho.</p>
+            <p><strong>Observações:</strong> Óleo trocado. Serviço concluído com sucesso.</p>
+            <p><strong>Data:</strong> 08/05/2025</p>
+          </div>
+        </li>
+        <li>
+          <div class="info">
+            <strong>Serviço:</strong> Balanceamento de roda  
+            <span class="status concluido">Concluído</span>
+            <p><strong>Moto:</strong> BMW S1000RR - Placa: GHI-3210 - Ano: 2023</p>
+            <p><strong>Descrição:</strong> Vibração na roda dianteira.</p>
+            <p><strong>Observações:</strong> Balanceamento realizado. Serviço concluído com sucesso.</p>
+            <p><strong>Data:</strong> 05/05/2025</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    function mostrarAba(abaId) {
+      document.querySelectorAll('.aba').forEach(aba => aba.classList.remove('ativa'));
+      document.getElementById(abaId).classList.add('ativa');
+    }
+  </script>
+</body>
+</html>

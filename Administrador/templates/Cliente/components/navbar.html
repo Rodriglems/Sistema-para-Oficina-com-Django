@@ -1,0 +1,14 @@
+{% load static %}
+<aside class="sidebar">
+  <img src="{% static 'image/Logo.png' %}" alt="Logo" class="logo" />
+  <nav>
+        <ul>
+          <li><a href="{% url 'dashboard-cliente' %}">Dashboard</a></li>
+          <li><a href="{% url 'historico-cliente' %}">Meus Históricos</a></li>
+          <li><a href="{% url 'agendamentos-cliente' %}">Agendamento</a></li>
+        </ul>
+        <div class="logout-button">
+          <a href="{% url 'logout' %}">Sair</a>
+        </div>
+  </nav>
+</aside>

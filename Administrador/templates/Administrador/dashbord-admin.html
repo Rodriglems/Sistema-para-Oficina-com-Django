@@ -1,0 +1,26 @@
+{% extends 'Administrador/base.html' %}
+
+{% block content %}
+  <main class="conteudo">
+        <h1>Dashboard Geral</h1>
+        <div class="cards">
+          <div class="card">
+            <h3>Agendamentos Hoje</h3>
+            <p>{{ agendamentos_hoje }}</p>
+          </div>
+          <div class="card">
+            <h3>Serviços em Andamento</h3>
+            <p>{{ servicos_andamento }}</p>
+          </div>
+          <div class="card">
+            <h3>Mecânicos Ativos</h3>
+            <p>{{ total_mecanicos }}</p>
+          </div>
+        </div>
+
+        <div class="grafico">
+          <h2>Agendamentos da Semana</h2>
+          <div class="grafico-placeholder">[gráfico aqui]</div>
+        </div>
+  </main>
+{% endblock %}

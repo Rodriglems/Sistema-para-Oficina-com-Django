@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cadastrar Cliente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 24px;
+      }
+      .container {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .field {
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+      }
+      .errorlist {
+        color: #b00020;
+        margin: 4px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .non-field {
+        color: #b00020;
+        margin-bottom: 12px;
+      }
+      button {
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Cadastrar Cliente</h1>
+
+      {% if form.non_field_errors %}
+      <div class="non-field">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'admin_cliente_cadastrar' %}">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="{{ form.nome_completo.id_for_label }}"
+            >Nome completo</label
+          >
+          {{ form.nome_completo }} {{ form.nome_completo.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Usuário</label>
+          {{ form.username }} {{ form.username.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">E-mail</label>
+          {{ form.email }} {{ form.email.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.telefone.id_for_label }}">Telefone</label>
+          {{ form.telefone }} {{ form.telefone.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.cpf.id_for_label }}">CPF</label>
+          {{ form.cpf }} {{ form.cpf.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.endereco.id_for_label }}">Endereço  <u>Ex: Rua/Numero/Bairro/Cidade/Complemento</u></label>
+          {{ form.endereco }} {{ form.endereco.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.password1.id_for_label }}">Senha</label>
+          {{ form.password1 }} {{ form.password1.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.password2.id_for_label }}">Confirmar senha</label>
+          {{ form.password2 }} {{ form.password2.errors }}
+        </div>
+
+        <button type="submit">Salvar</button>
+      </form>
+    </div>
+  </body>
+</html>
