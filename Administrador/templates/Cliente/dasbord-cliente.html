@@ -1,40 +1,231 @@
-{% extends "Cliente/base.html" %} {% block title %} Pagina Inicio {% endblock %}
+{% extends "Cliente/base.html" %}
+{% block title %}Dashboard - Oficina{% endblock %}
+
 {% block content %}
-<h1>Bem-vindo, {{ request.user.username }}!</h1>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>Olá, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
+      <p class="subtitle">Bem-vindo ao seu painel de controle</p>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'agendar-cliente' %}" class="btn-action btn-primary">
+        <span class="btn-icon">+</span>
+        Novo Agendamento
+      </a>
+    </div>
+  </div>
 
-      <section class="cards">
-  <div class="card">
-    <h2>Próximo Agendamento</h2>
-    {% with proximo_agendamento=agendamentos|first %}
+  <div class="stats-grid">
+    <div class="stat-card stat-card-primary">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ total_pendentes }}</div>
+        <div class="stat-label">Agendamentos Pendentes</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-success">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ total_finalizados }}</div>
+        <div class="stat-label">Serviços Concluídos</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-warning">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ total_em_andamento }}</div>
+        <div class="stat-label">Em Andamento</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-info">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ total_motos }}</div>
+        <div class="stat-label">Motos Cadastradas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-main">
+    <div class="dashboard-left">
       {% if proximo_agendamento %}
-        <p><strong>Data:</strong> {{ proximo_agendamento.data_hora|date:"d/m/Y" }}</p>
-        <p><strong>Hora:</strong> {{ proximo_agendamento.data_hora|time:"H:i" }}</p>
-        <p><strong>Serviço:</strong> {{ proximo_agendamento.servico.nome }}</p>
-        <p><strong>Status:</strong> {{ proximo_agendamento.get_status_display }}</p>
+      <div class="next-appointment-card">
+        <div class="card-header-dash">
+          <h3>Próximo Agendamento</h3>
+          <span class="badge badge-{{ proximo_agendamento.status }}">{% if proximo_agendamento.status == 'agendado' %}Agendado{% elif proximo_agendamento.status == 'em_andamento' %}Em Andamento{% endif %}</span>
+        </div>
+        <div class="appointment-details">
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </div>
+            <div class="detail-info">
+              <span class="detail-label">Data e Hora</span>
+              <span class="detail-value">{{ proximo_agendamento.data_hora|date:"d/m/Y" }} às {{ proximo_agendamento.data_hora|time:"H:i" }}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </div>
+            <div class="detail-info">
+              <span class="detail-label">Serviço</span>
+              <span class="detail-value">{{ proximo_agendamento.servico.nome }}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 18h14M3 6h18M8 14h8M9 10h6"></path>
+              </svg>
+            </div>
+            <div class="detail-info">
+              <span class="detail-label">Moto</span>
+              <span class="detail-value">{{ proximo_agendamento.moto.marca }} {{ proximo_agendamento.moto.modelo }}</span>
+            </div>
+          </div>
+          {% if proximo_agendamento.mecanico %}
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="detail-info">
+              <span class="detail-label">Mecânico</span>
+              <span class="detail-value">{{ proximo_agendamento.mecanico.nome_completo }}</span>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
       {% else %}
-        <p>Nenhum agendamento futuro.</p>
+      <div class="empty-card">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #bdc3c7;">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <h3>Nenhum agendamento futuro</h3>
+        <p>Que tal agendar um serviço para sua moto?</p>
+        <a href="{% url 'agendar-cliente' %}" class="btn-action btn-primary">Agendar Agora</a>
+      </div>
       {% endif %}
-    {% endwith %}
-  </div>
 
-  <div class="card">
-    <h2>Último Serviço</h2>
-    {% if ultimo_servico %}
-      <p><strong>Data:</strong> {{ ultimo_servico.data_hora|date:"d/m/Y" }}</p>
-      <p><strong>Serviço:</strong> {{ ultimo_servico.servico.nome }}</p>
-      <p><strong>Status:</strong> {{ ultimo_servico.get_status_display }}</p>
-    {% else %}
-      <p>Nenhum serviço finalizado.</p>
-    {% endif %}
-  </div>
+      {% if agendamentos %}
+      <div class="appointments-list-card">
+        <div class="card-header-dash">
+          <h3>Próximos Agendamentos</h3>
+          <a href="{% url 'agendamentos-cliente' %}" class="link-view-all">Ver todos</a>
+        </div>
+        <div class="appointments-list">
+          {% for agendamento in agendamentos %}
+          <div class="appointment-item">
+            <div class="appointment-date">
+              <div class="date-day">{{ agendamento.data_hora|date:"d" }}</div>
+              <div class="date-month">{{ agendamento.data_hora|date:"M" }}</div>
+            </div>
+            <div class="appointment-info">
+              <div class="appointment-title">{{ agendamento.servico.nome }}</div>
+              <div class="appointment-meta">{{ agendamento.moto.marca }} {{ agendamento.moto.modelo }} • {{ agendamento.data_hora|time:"H:i" }}</div>
+            </div>
+            <span class="badge badge-{{ agendamento.status }}">{% if agendamento.status == 'agendado' %}Agendado{% elif agendamento.status == 'em_andamento' %}Em Andamento{% endif %}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
 
-  <div class="card">
-    <h2>Total de Serviços</h2>
-    <p><strong>Finalizados:</strong> {{ total_finalizados }}</p>
-    <p><strong>Cancelados:</strong> {{ total_cancelados }}</p>
-    <p><strong>Pendentes:</strong> {{ total_pendentes }}</p>
-  </div>
-</section>
+    <div class="dashboard-right">
+      {% if ultimo_servico %}
+      <div class="last-service-card">
+        <div class="card-header-dash">
+          <h3>Último Serviço</h3>
+        </div>
+        <div class="service-content">
+          <div class="service-info-item">
+            <span class="service-label">Data</span>
+            <span class="service-value">{{ ultimo_servico.data_hora|date:"d/m/Y" }}</span>
+          </div>
+          <div class="service-info-item">
+            <span class="service-label">Serviço</span>
+            <span class="service-value">{{ ultimo_servico.servico.nome }}</span>
+          </div>
+          <div class="service-info-item">
+            <span class="service-label">Moto</span>
+            <span class="service-value">{{ ultimo_servico.moto.marca }} {{ ultimo_servico.moto.modelo }}</span>
+          </div>
+          {% if ultimo_servico.valor_servico %}
+          <div class="service-info-item">
+            <span class="service-label">Valor</span>
+            <span class="service-value service-price">R$ {{ ultimo_servico.valor_servico|floatformat:2 }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
 
-      <a href="{% url 'agendar-cliente' %}" class="btn-agendar">+ Novo Agendamento</a>
+      <div class="quick-actions-card">
+        <div class="card-header-dash">
+          <h3>Ações Rápidas</h3>
+        </div>
+        <div class="quick-actions-list">
+          <a href="{% url 'agendar-cliente' %}" class="quick-action-item">
+            <div class="action-icon action-icon-primary">+</div>
+            <div class="action-text">Novo Agendamento</div>
+          </a>
+          <a href="{% url 'minhas-motos' %}" class="quick-action-item">
+            <div class="action-icon action-icon-info">🏍️</div>
+            <div class="action-text">Minhas Motos</div>
+          </a>
+          <a href="{% url 'historico-cliente' %}" class="quick-action-item">
+            <div class="action-icon action-icon-success">📋</div>
+            <div class="action-text">Ver Histórico</div>
+          </a>
+          <a href="{% url 'agendamentos-cliente' %}" class="quick-action-item">
+            <div class="action-icon action-icon-warning">📅</div>
+            <div class="action-text">Meus Agendamentos</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

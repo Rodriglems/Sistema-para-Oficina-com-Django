@@ -1,0 +1,120 @@
+{% extends "Cliente/base.html" %}
+{% block title %}Minhas Motos{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="motos-header">
+        <div>
+            <h1>Minhas Motos</h1>
+            <p class="subtitle">Gerencie suas motocicletas cadastradas</p>
+        </div>
+        <a href="{% url 'cadastrar-moto' %}" class="btn-nova-moto">Nova Moto</a>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if motos %}
+    <div class="motos-grid">
+        {% for moto in motos %}
+        <div class="moto-card">
+            <div class="moto-card-header">
+                <h3>{{ moto.marca }} {{ moto.modelo }}</h3>
+                <span class="moto-ano">{{ moto.ano }}</span>
+            </div>
+
+            <div class="moto-card-body">
+                <div class="moto-info-item">
+                    <span class="info-label">Marca:</span>
+                    <span class="info-value">{{ moto.marca }}</span>
+                </div>
+                <div class="moto-info-item">
+                    <span class="info-label">Modelo:</span>
+                    <span class="info-value">{{ moto.modelo }}</span>
+                </div>
+                <div class="moto-info-item">
+                    <span class="info-label">Ano:</span>
+                    <span class="info-value">{{ moto.ano }}</span>
+                </div>
+                {% if moto.placa %}
+                <div class="moto-info-item">
+                    <span class="info-label">Placa:</span>
+                    <span class="info-value">{{ moto.placa }}</span>
+                </div>
+                {% endif %}
+                {% if moto.cor %}
+                <div class="moto-info-item">
+                    <span class="info-label">Cor:</span>
+                    <span class="info-value">{{ moto.cor }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="moto-card-actions">
+                <a href="{% url 'editar-moto' moto.id %}" class="btn-editar-moto">Editar</a>
+                <button onclick="confirmarExclusao({{ moto.id }}, '{{ moto.marca }} {{ moto.modelo }}')"
+                    class="btn-excluir-moto">Excluir</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>Nenhuma moto cadastrada</h3>
+        <p>Você ainda não tem motos cadastradas no sistema.</p>
+        <a href="{% url 'cadastrar-moto' %}" class="btn-primary">
+            Cadastrar Primeira Moto
+        </a>
+    </div>
+    {% endif %}
+</main>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div id="modalExclusao" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h3>Confirmar Exclusão</h3>
+        <p>Tem certeza que deseja excluir a moto <strong id="motoNome"></strong>?</p>
+        <p class="modal-warning">Esta ação não pode ser desfeita.</p>
+        <div class="modal-buttons">
+            <button onclick="fecharModal()" class="btn-modal-cancelar">Cancelar</button>
+            <button onclick="excluirMoto()" class="btn-modal-confirmar">Sim, excluir</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let motoIdParaExcluir = null;
+
+    function confirmarExclusao(motoId, motoNome) {
+        motoIdParaExcluir = motoId;
+        document.getElementById('motoNome').textContent = motoNome;
+        document.getElementById('modalExclusao').style.display = 'flex';
+    }
+
+    function fecharModal() {
+        document.getElementById('modalExclusao').style.display = 'none';
+        motoIdParaExcluir = null;
+    }
+
+    function excluirMoto() {
+        if (motoIdParaExcluir) {
+            window.location.href = `/excluir-moto/${motoIdParaExcluir}/`;
+        }
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modalExclusao').addEventListener('click', function (e) {
+        if (e.target === this) {
+            fecharModal();
+        }
+    });
+</script>
+
+{% endblock %}

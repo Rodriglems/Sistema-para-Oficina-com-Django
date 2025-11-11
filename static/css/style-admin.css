@@ -227,16 +227,16 @@ tr:nth-child(even) {
 }
 
 .status.pendente {
-  background-color: #ffc107;
+  background-color: #007bff;
 }
 .status.concluido {
   background-color: #28a745;
 }
 .status.cancelado {
-  background-color: #dc3545;
+  background-color: #dc3545 ;
 }
 .status.confirmado {
-  background-color: #007bff;
+  background-color: #ffc107;
 }
 .status.atrasado {
   background-color: #6c757d;

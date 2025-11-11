@@ -1,32 +1,111 @@
-{% extends "Cliente/base.html"%} 
-{% block title %} Agendar Serviços {% endblock%}
+{% extends "Cliente/base.html" %}
+{% block title %}Agendar Serviços{% endblock %}
 
-{% block content%}
+{% block content %}
 <main class="content">
-  <h1>Agende seu Serviço</h1>
-  <form method="post" action="{% url 'agendar-servico' %}" class="Agendamento-form">
+  <div class="form-header">
+    <h1>Agende seu Serviço</h1>
+    <p class="subtitle">Preencha os dados para agendar o serviço da sua moto</p>
+  </div>
+
+  {% if messages %}
+  <div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'agendar-servico' %}" class="form-agendamento">
     {% csrf_token %}
-    
-    <label for="marca">Marca da Moto</label>
-    <input type="text" id="marca" name="marca" placeholder="Ex: Honda" required class="form-control" />
 
-    <label for="modelo">Modelo da Moto</label>
-    <input type="text" id="modelo" name="modelo" placeholder="Ex: CG 160 Titan" required class="form-control" />
+    <!-- Seção Moto -->
+    <div class="form-section">
+      <h3>Selecione a Moto</h3>
 
-    <label for="ano">Ano</label>
-    <input type="number" id="ano" name="ano" placeholder="Ex: 2022" required class="form-control" />
-
-    <div class="form-group data-hora">
-      <div class="input-data">
-        <label for="data">Data</label>
-        <input type="date" id="data" name="data" required class="form-control" />
+      {% if minhas_motos %}
+      <div class="form-group">
+        <label for="moto_id">Moto *</label>
+        <select id="moto_id" name="moto_id" class="form-control" onchange="toggleNovaMoto()">
+          <option value="">Selecione uma moto</option>
+          {% for moto in minhas_motos %}
+          <option value="{{ moto.id }}">
+            {{ moto.marca }} {{ moto.modelo }} ({{ moto.ano }})
+            {% if moto.placa %} - {{ moto.placa }}{% endif %}
+          </option>
+          {% endfor %}
+          <option value="nova">+ Cadastrar Nova Moto</option>
+        </select>
       </div>
-      <div class="input-hora">
-        <label for="hora">Hora</label>
-        <input type="time" id="hora" name="hora" required class="form-control" />
+
+      <!-- Campos para nova moto (ocultos inicialmente) -->
+      <div id="campos-nova-moto" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="marca">Marca *</label>
+            <input type="text" id="marca" name="marca" placeholder="Ex: Honda" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="modelo">Modelo *</label>
+            <input type="text" id="modelo" name="modelo" placeholder="Ex: CG 160" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="ano">Ano *</label>
+            <input type="number" id="ano" name="ano" placeholder="Ex: 2022" class="form-control" />
+          </div>
+        </div>
       </div>
-      <div>
-        <label for="servico">Serviço</label>
+      {% else %}
+      <div class="alert alert-warning">
+        <p><strong>Você ainda não tem motos cadastradas.</strong></p>
+        <p>Cadastre seus dados abaixo ou <a href="{% url 'cadastrar-moto' %}">clique aqui para cadastrar uma moto
+            primeiro</a>.</p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="marca">Marca *</label>
+          <input type="text" id="marca" name="marca" placeholder="Ex: Honda" required class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="modelo">Modelo *</label>
+          <input type="text" id="modelo" name="modelo" placeholder="Ex: CG 160" required class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="ano">Ano *</label>
+          <input type="number" id="ano" name="ano" placeholder="Ex: 2022" required class="form-control" />
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Seção Data e Hora -->
+    <div class="form-section">
+      <h3>Data e Hora</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="data">Data *</label>
+          <input type="date" id="data" name="data" required class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="hora">Hora *</label>
+          <input type="time" id="hora" name="hora" required class="form-control" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção Serviço -->
+    <div class="form-section">
+      <h3>Serviço</h3>
+      <div class="form-group">
+        <label for="servico">Tipo de Serviço *</label>
         <select id="servico" name="servico" required class="form-control">
           <option value="" disabled selected>Selecione um serviço</option>
           <option value="Troca de óleo">Troca de óleo</option>
@@ -35,15 +114,57 @@
           <option value="Alinhamento e balanceamento">Alinhamento e balanceamento</option>
           <option value="Troca de pneus">Troca de pneus</option>
           <option value="Instalação de acessórios">Instalação de acessórios</option>
+          <option value="Troca de corrente">Troca de corrente</option>
+          <option value="Revisão elétrica">Revisão elétrica</option>
           <option value="Outros">Outros</option>
         </select>
       </div>
+
+      <div class="form-group">
+        <label for="descricao">Descrição do Problema *</label>
+        <textarea id="descricao" name="descricao" rows="4" placeholder="Descreva o problema ou serviço necessário..."
+          required class="form-control"></textarea>
+      </div>
     </div>
 
-    <label for="descricao">Descrição do Serviço</label>
-    <textarea id="descricao" name="descricao" rows="4" placeholder="Descreva o problema..." required class="form-control"></textarea>
-
-    <button type="submit" class="btn-agendar">Confirmar Agendamento</button>
+    <div class="form-actions">
+      <a href="{% url 'dashboard-cliente' %}" class="btn-cancelar-form">
+        Cancelar
+      </a>
+      <button type="submit" class="btn-salvar-form">
+        Confirmar Agendamento
+      </button>
+    </div>
   </form>
 </main>
+
+<script>
+  // Validar data mínima (hoje)
+  document.addEventListener('DOMContentLoaded', function () {
+    const dataInput = document.getElementById('data');
+    const hoje = new Date().toISOString().split('T')[0];
+    dataInput.min = hoje;
+  });
+
+  function toggleNovaMoto() {
+    const selectMoto = document.getElementById('moto_id');
+    const camposNovaMoto = document.getElementById('campos-nova-moto');
+    const marca = document.getElementById('marca');
+    const modelo = document.getElementById('modelo');
+    const ano = document.getElementById('ano');
+
+    if (selectMoto.value === 'nova') {
+      camposNovaMoto.style.display = 'block';
+      marca.required = true;
+      modelo.required = true;
+      ano.required = true;
+    } else {
+      camposNovaMoto.style.display = 'none';
+      marca.required = false;
+      modelo.required = false;
+      ano.required = false;
+    }
+  }
+</script>
+
 {% endblock %}

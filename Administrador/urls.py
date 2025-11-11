@@ -10,6 +10,14 @@ urlpatterns = [
     path('agendar/', cliente.agendar_cliente, name='agendar-cliente'),
     path('agendamentos/', cliente.agendamentos_cliente, name='agendamentos-cliente'),
     path('historico/', cliente.historico_cliente, name='historico-cliente'),
+    path('cancelar-agendamento/<int:agendamento_id>/', cliente.cancelar_agendamento_cliente, name='cancelar-agendamento-cliente'),
+    path('remarcar-agendamento/<int:agendamento_id>/', cliente.remarcar_agendamento_cliente, name='remarcar-agendamento-cliente'),
+    
+    # Motos do Cliente
+    path('minhas-motos/', cliente.minhas_motos, name='minhas-motos'),
+    path('cadastrar-moto/', cliente.cadastrar_moto, name='cadastrar-moto'),
+    path('editar-moto/<int:moto_id>/', cliente.editar_moto, name='editar-moto'),
+    path('excluir-moto/<int:moto_id>/', cliente.excluir_moto, name='excluir-moto'),
     
     # Agendamento e serviços
     path('agendamento/', cliente.agendar_servico, name='agendar-servico'),
@@ -29,6 +37,11 @@ urlpatterns = [
     # Mecânico
     path('dashboard-mecanico/', mecanico.dashboard_mecanico, name='dashboard-mecanico'),
     path('painel-mecanico/', mecanico.painel_mecanico, name='painel-mecanico'),
+    path('pegar-agendamento/<int:agendamento_id>/', mecanico.pegar_agendamento, name='pegar-agendamento'),
+    path('concluir-agendamento/<int:agendamento_id>/', mecanico.concluir_agendamento, name='concluir-agendamento'),
+    path('cancelar-agendamento-mecanico/<int:agendamento_id>/', mecanico.cancelar_agendamento_mecanico, name='cancelar-agendamento-mecanico'),
+    path('ver-servicos-pendentes/', mecanico.ver_servicos_pendentes, name='ver-servicos-pendentes'),
+    path('historico-mecanico/', mecanico.historico_mecanico, name='historico-mecanico'),
     path('logout-mecanico/', mecanico.logout_mecanico, name='logout-mecanico'),
     
     path('adm-agendamentos/', administrador.agendamentos_admin, name='adm-agendamentos'),

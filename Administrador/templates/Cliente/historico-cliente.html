@@ -1,24 +1,135 @@
- {% extends "Cliente/base.html" %} {% block title%} Histórico de Serviços {% endblock%}
- {% block content %}
- <main class="content">
-          
-      <div class="historico-card">
-        <p><strong>Data:</strong> 10/05/2025</p>
-        <p><strong>Serviço:</strong> Troca de óleo</p>
-        <p><strong>Status:</strong> Finalizado</p>
-        <p><strong>Observações:</strong> Cliente recomendou óleo 20W50</p>
-        <p><strong>Avaliação:</strong> ⭐⭐⭐⭐☆</p>
-      </div>
+{% extends "Cliente/base.html" %}
+{% block title %}Histórico de Serviços{% endblock %}
 
-      <div class="historico-card">
-        <p><strong>Data:</strong> 01/05/2025</p>
-        <p><strong>Serviço:</strong> Revisão geral</p>
-        <p><strong>Status:</strong> Cancelado</p>
-        <p><strong>Observações:</strong> Cliente desmarcou 1 dia antes</p>
-        <p><strong>Avaliação:</strong> -</p>
-      </div>
+{% block content %}
+<main class="content">
+  <div class="historico-header">
+    <h1>Histórico de Serviços</h1>
+    <p class="subtitle">Acompanhe todos os serviços realizados na sua moto</p>
+  </div>
 
-      <!-- Adicione outros históricos dinamicamente -->
-    </main>
+  <!-- Filtros -->
+  <div class="filtros-historico">
+    <button class="filtro-btn active" onclick="filtrarHistorico('todos')">
+      Todos ({{ todos_agendamentos|length }})
+    </button>
+    <button class="filtro-btn" onclick="filtrarHistorico('concluido')">
+      Concluídos ({{ total_servicos }})
+    </button>
+    <button class="filtro-btn" onclick="filtrarHistorico('cancelado')">
+      Cancelados ({{ total_cancelados }})
+    </button>
+  </div>
+
+  <!-- Tabela de Histórico -->
+  {% if todos_agendamentos %}
+  <div class="table-container">
+    <table class="table-historico">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data/Hora</th>
+          <th>Moto</th>
+          <th>Serviço</th>
+          <th>Mecânico</th>
+          <th>Descrição do Cliente</th>
+          <th>Descrição do Mecânico</th>
+          <th>Preço</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for agendamento in todos_agendamentos %}
+        <tr class="historico-row" data-status="{{ agendamento.status }}">
+          <td class="td-center">
+            <strong>#{{ agendamento.id }}</strong>
+          </td>
+          <td>
+            <div class="data-info">
+              <strong>{{ agendamento.data_hora|date:"d/m/Y" }}</strong><br>
+              <small>{{ agendamento.data_hora|date:"H:i" }}</small>
+            </div>
+          </td>
+          <td>
+            <strong>{{ agendamento.moto.marca }} {{ agendamento.moto.modelo }}</strong><br>
+            <small>Ano: {{ agendamento.moto.ano }}</small>
+          </td>
+          <td>
+            <strong>{{ agendamento.servico.nome }}</strong>
+          </td>
+          <td>
+            {% if agendamento.mecanico %}
+            {{ agendamento.mecanico.nome_completo }}
+            {% else %}
+            <em style="color: #999;">Não atribuído</em>
+            {% endif %}
+          </td>
+          <td class="descricao-col">
+            {% if agendamento.descricao_problema %}
+            {{ agendamento.descricao_problema }}
+            {% else %}
+            <em style="color: #999;">Sem descrição</em>
+            {% endif %}
+          </td>
+          <td class="descricao-col">
+            {% if agendamento.status == 'concluido' and agendamento.descricao_mecanico %}
+            <div class="desc-mecanico">{{ agendamento.descricao_mecanico }}</div>
+            {% else %}
+            <em style="color: #999;">-</em>
+            {% endif %}
+          </td>
+          <td class="td-center">
+            {% if agendamento.status == 'concluido' and agendamento.valor_servico %}
+            <strong class="preco-valor">R$ {{ agendamento.valor_servico|floatformat:2 }}</strong>
+            {% else %}
+            <em style="color: #999;">-</em>
+            {% endif %}
+          </td>
+          <td class="td-center">
+            {% if agendamento.status == 'concluido' %}
+            <span class="badge-concluido">Concluído</span>
+            {% elif agendamento.status == 'cancelado' %}
+            <span class="badge-cancelado">Cancelado</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <h3>Nenhum serviço no histórico</h3>
+    <p>Você ainda não tem serviços concluídos ou cancelados.</p>
+    <a href="{% url 'agendar-servico' %}" class="btn-primary">
+      Agendar Primeiro Serviço
+    </a>
+  </div>
+  {% endif %}
+</main>
+
+<script>
+  function filtrarHistorico(filtro) {
+    const rows = document.querySelectorAll('.historico-row');
+    const buttons = document.querySelectorAll('.filtro-btn');
+
+    // Atualizar botões ativos
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Filtrar linhas
+    rows.forEach(row => {
+      const status = row.dataset.status;
+
+      if (filtro === 'todos') {
+        row.style.display = 'table-row';
+      } else if (filtro === status) {
+        row.style.display = 'table-row';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+</script>
 
 {% endblock %}

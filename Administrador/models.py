@@ -17,15 +17,18 @@ class Servicos(models.Model):
     
     
 class Moto(models.Model):
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE, null=True, blank=True, related_name='motos')
     marca = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
-    ano = models.IntegerField()    
+    ano = models.IntegerField()
+    placa = models.CharField(max_length=10, null=True, blank=True)
+    cor = models.CharField(max_length=50, null=True, blank=True)
     
-    
-    # Método especial que define como o objeto será representado como string
-    # Retorna uma formatação legível: "marca modelo - placa" (ex: "Honda CB600F - ABC-1234")
     def __str__(self):
-        return self.marca
+        return f"{self.marca} {self.modelo} ({self.ano})"
+    
+    class Meta:
+        ordering = ['-id']
     
 #Sem __str__ mostraria: <Moto object (1)>
 # Com __str__ mostra: "Yamaha MT-07 - XYZ-9876"
@@ -76,6 +79,8 @@ class Agendamento(models.Model):
     mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE, null=True, blank=True)  # Agora é opcional
     servico = models.ForeignKey(Servicos, on_delete=models.CASCADE)
     descricao_problema = models.TextField(null=True, blank=True)
+    descricao_mecanico = models.TextField(null=True, blank=True, verbose_name='Descrição do Mecânico')
+    valor_servico = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name='Valor do Serviço')
     data_hora = models.DateTimeField()
     moto = models.ForeignKey(Moto, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=[
@@ -153,19 +158,6 @@ class ConfiguracaoNotificacao(models.Model):
     email_cancelamento = models.BooleanField(default=True)
     email_conclusao = models.BooleanField(default=True)
     
-    
-class Peca(models.Model):
-    nome = models.CharField(max_length=200)
-    codigo = models.CharField(max_length=50, unique=True)
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
-    estoque = models.IntegerField(default=0)
-    estoque_minimo = models.IntegerField(default=5)
-    fornecedor = models.CharField(max_length=200)
-    ativo = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return f"{self.nome} - {self.codigo}"
-
 
 class LogAuditoria(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)

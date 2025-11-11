@@ -1,0 +1,109 @@
+{% extends "Cliente/base.html" %}
+{% block title %}Remarcar Agendamento{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="remarcar-header">
+        <h1>Remarcar Agendamento #{{ agendamento.id }}</h1>
+        <p class="subtitle">Edite os dados do seu agendamento</p>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="form-remarcar">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h3>Dados da Moto</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Marca *</label>
+                    <input type="text" id="marca" name="marca" value="{{ agendamento.moto.marca }}" required
+                        class="form-control" placeholder="Ex: Honda" />
+                </div>
+
+                <div class="form-group">
+                    <label for="modelo">Modelo *</label>
+                    <input type="text" id="modelo" name="modelo" value="{{ agendamento.moto.modelo }}" required
+                        class="form-control" placeholder="Ex: CG 160 Titan" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ano">Ano *</label>
+                    <input type="number" id="ano" name="ano" value="{{ agendamento.moto.ano }}" required
+                        class="form-control" placeholder="Ex: 2022" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Data e Hora</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="data">Data *</label>
+                    <input type="date" id="data" name="data" value="{{ agendamento.data_hora|date:'Y-m-d' }}" required
+                        class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="hora">Hora *</label>
+                    <input type="time" id="hora" name="hora" value="{{ agendamento.data_hora|time:'H:i' }}" required
+                        class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Serviço</h3>
+            <div class="form-group">
+                <label for="servico">Tipo de Serviço *</label>
+                <select id="servico" name="servico" required class="form-control">
+                    <option value="{{ agendamento.servico.nome }}" selected>{{ agendamento.servico.nome }}</option>
+                    <option value="Troca de óleo">Troca de óleo</option>
+                    <option value="Revisão geral">Revisão geral</option>
+                    <option value="Conserto de freios">Conserto de freios</option>
+                    <option value="Alinhamento e balanceamento">Alinhamento e balanceamento</option>
+                    <option value="Troca de pneus">Troca de pneus</option>
+                    <option value="Instalação de acessórios">Instalação de acessórios</option>
+                    <option value="Troca de corrente">Troca de corrente</option>
+                    <option value="Revisão elétrica">Revisão elétrica</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição do Problema *</label>
+                <textarea id="descricao" name="descricao" rows="4" required class="form-control"
+                    placeholder="Descreva o problema ou serviço necessário...">{{ agendamento.descricao_problema }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'agendamentos-cliente' %}" class="btn-cancelar-form">
+                Cancelar
+            </a>
+            <button type="submit" class="btn-salvar-form">
+                Salvar Alterações
+            </button>
+        </div>
+    </form>
+</main>
+
+<script>
+    // Validar data mínima (hoje)
+    document.addEventListener('DOMContentLoaded', function () {
+        const dataInput = document.getElementById('data');
+        const hoje = new Date().toISOString().split('T')[0];
+        dataInput.min = hoje;
+    });
+</script>
+
+{% endblock %}

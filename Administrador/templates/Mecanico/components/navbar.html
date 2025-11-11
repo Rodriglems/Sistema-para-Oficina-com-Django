@@ -1,16 +1,16 @@
 {% load static %}
 <aside class="sidebar">
-  <h2>🔧 Mecânico</h2>
   <img src="{% static 'image/Logo.png' %}" alt="Logo" class="logo" />
   <nav>
     <ul>
       <li><a href="{% url 'dashboard-mecanico' %}"
-          class="{% if request.resolver_match.url_name == 'dashboard-mecanico' %}ativo{% endif %}">Inicio</a></li>
-      <li><a href="#"
-          class="{% if request.resolver_match.url_name == 'historico-mecanico' %}ativo{% endif %}">Histórico</a>
+          class="{% if request.resolver_match.url_name == 'dashboard-mecanico' %}ativo{% endif %}">Início</a></li>
+      <li><a href="{% url 'ver-servicos-pendentes' %}"
+          class="{% if request.resolver_match.url_name == 'ver-servicos-pendentes' %}ativo{% endif %}">Área de
+          Pendentes</a>
       </li>
-      <li><a href="#" class="{% if request.resolver_match.url_name == 'servicos-mecanico' %}ativo{% endif %}">Meus
-          Serviços</a>
+      <li><a href="{% url 'historico-mecanico' %}"
+          class="{% if request.resolver_match.url_name == 'historico-mecanico' %}ativo{% endif %}">Histórico</a>
       </li>
     </ul>
     <div class="logout-button">

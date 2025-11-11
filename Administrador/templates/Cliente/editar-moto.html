@@ -1,0 +1,74 @@
+{% extends "Cliente/base.html" %}
+{% block title %}Editar Moto{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="form-header">
+        <h1>Editar Moto</h1>
+        <p class="subtitle">Atualize os dados da sua motocicleta</p>
+    </div>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="form-moto">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h3>Dados da Moto</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Marca *</label>
+                    <input type="text" id="marca" name="marca" value="{{ moto.marca }}" required class="form-control"
+                        placeholder="Ex: Honda, Yamaha, Suzuki" />
+                </div>
+
+                <div class="form-group">
+                    <label for="modelo">Modelo *</label>
+                    <input type="text" id="modelo" name="modelo" value="{{ moto.modelo }}" required class="form-control"
+                        placeholder="Ex: CG 160, XTZ 250" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ano">Ano *</label>
+                    <input type="number" id="ano" name="ano" value="{{ moto.ano }}" required class="form-control"
+                        min="1900" max="2030" placeholder="Ex: 2022" />
+                </div>
+
+                <div class="form-group">
+                    <label for="cor">Cor</label>
+                    <input type="text" id="cor" name="cor" value="{{ moto.cor|default:'' }}" class="form-control"
+                        placeholder="Ex: Preto, Vermelho, Azul" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="placa">Placa</label>
+                <input type="text" id="placa" name="placa" value="{{ moto.placa|default:'' }}" class="form-control"
+                    maxlength="8" placeholder="Ex: ABC-1234 ou ABC1D23" style="text-transform: uppercase;" />
+                <small class="form-help">Formato: ABC-1234 (antigo) ou ABC1D23 (Mercosul)</small>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'minhas-motos' %}" class="btn-cancelar-form">
+                Cancelar
+            </a>
+            <button type="submit" class="btn-salvar-form">
+                Salvar Alterações
+            </button>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

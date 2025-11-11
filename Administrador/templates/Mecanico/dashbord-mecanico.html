@@ -1,43 +1,94 @@
 {% extends 'Mecanico/base.html' %}
 {% load static %}
-
 {% block title %}Dashboard - Mecânico{% endblock %}
+
 {% block content %}
 <main class="content">
-  <h1> Bem-vindo {{mecanico.nome_completo}}!</h1>
-  {% if messages %}
-  {% for message in messages %}
-  <div class=" alert alert-{{ message.tags }}">{{ message }} </div>
-  {% endfor %}
-  {% endif %}
+  <h1>Bem-vindo, {{mecanico.nome_completo}}!</h1>
+  <!-- Seção de Meus Agendamentos em Andamento -->
   <div class="info-section">
-    <h2>Agendamentos Pendentes</h2>
+    <h2> Meus Serviços em Andamento</h2>
+    <p>Agendamentos que você está atendendo</p>
 
-    {% if agendamentos_pendentes %}
-    <table>
-      <tr>
-        <th>Cliente</th>
-        <th>Serviço</th>
-        <th>Data/Hora</th>
-        <th>Ações</th>
-      </tr>
-
-      {% for a in agendamentos_pendentes %}
-      <tr>
-        <td>{{ a.cliente.usuario.first_name }} {{ a.cliente.usuario.last_name }}</td>
-        <td>{{ a.servico.nome }}</td>
-        <td>{{ a.data_hora|date:"d/m/Y H:i" }}</td>
-        <td>
-          <a href="#" class="btn-editar">
-            Iniciar Serviço
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-
+    {% if meus_agendamentos %}
+    <div class="table-container">
+      <table class="table-agendamentos table-em-andamento">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Moto</th>
+            <th>Serviço</th>
+            <th>Data Agendada</th>
+            <th>Descricao do cliente</th>
+            <th>Descrição do mecanico</th>
+            <th>Preço</th>
+            <th>Status</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for agendamento in meus_agendamentos %}
+          <tr>
+            <td>
+              <strong>{{ agendamento.cliente.nome_completo }}</strong><br>
+            </td>
+            <td>
+              <strong>{{ agendamento.moto.marca }} {{ agendamento.moto.modelo }}</strong><br>
+              <small>Ano: {{ agendamento.moto.ano }}</small>
+            </td>
+            <td>
+              {{ agendamento.servico.nome }}
+            </td>
+            <td>
+              {{ agendamento.data_hora|date:"d/m/Y H:i" }}
+            </td>
+            <td class="descricao-problema">
+              {% if agendamento.descricao_problema %}
+              {{ agendamento.descricao_problema }}
+              {% else %}
+              <em>Sem descrição</em>
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{% url 'concluir-agendamento' agendamento.id %}" class="form-inline-concluir"
+                id="form-{{ agendamento.id }}">
+                {% csrf_token %}
+                <textarea name="descricao_mecanico" placeholder="Descreva o serviço..." required
+                  style="width: 200px; padding: 5px; border: 1px solid #ddd; border-radius: 3px; resize: vertical;"
+                  rows="2"></textarea>
+              </form>
+            </td>
+            <td>
+              <input type="text" name="valor_servico" form="form-{{ agendamento.id }}" placeholder="Ex: 150.00" required
+                pattern="[0-9]+([.,][0-9]{1,2})?"
+                style="padding: 5px; border: 1px solid #ddd; border-radius: 3px; width: 90px;">
+            </td>
+            <td>
+              <span class="badge-status">
+                Andamento
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="acoes-servico">
+                <button type="submit" form="form-{{ agendamento.id }}" class="btn-concluir"
+                  onclick="return confirm('Confirmar conclusão do serviço?\n\nCliente: {{ agendamento.cliente.nome_completo }}\nServiço: {{ agendamento.servico.nome }}\n\nCertifique-se de preencher a descrição e o valor!')">
+                  Concluir
+                </button>
+                <a href="{% url 'cancelar-agendamento-mecanico' agendamento.id %}" class="btn-cancelar-servico"
+                  onclick="return confirm('Devolver este agendamento para pendente?\n\nO serviço voltará para a lista de disponíveis.')">
+                  Cancelar
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-    <p style="text-align: center; color: #666;">Nenhum agendamento pendente.</p>
+    <div class="empty-message">
+      <p>Você não tem serviços em andamento no momento.</p>
+    </div>
     {% endif %}
   </div>
 </main>

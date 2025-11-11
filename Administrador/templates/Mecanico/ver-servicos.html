@@ -1,0 +1,71 @@
+{% extends 'Mecanico/base.html' %}
+{% load static %}
+{% block title %}Dashboard - Mecânico{% endblock %}
+
+{% block content %}
+<main class="content">
+    <h1>Bem-vindo, {{mecanico.nome_completo}}!</h1>
+    <!-- Seção de Serviços Pendentes para Pegar -->
+    <div class="" style="margin-bottom: 30px;">
+        <main>
+            <!-- Seção de Serviços Pendentes para Pegar -->
+            <div class="info-section">
+                <h2> Serviços Pendentes - Disponíveis para Pegar</h2>
+                <p>Agendamentos aguardando um mecânico</p>
+
+                {% if agendamentos_pendentes %}
+                <div class="table-container">
+                    <table class="table-agendamentos">
+                        <thead class="headp">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Moto</th>
+                                <th>Serviço</th>
+                                <th>Data Solicitada</th>
+                                <th>Descrição do Problema</th>
+                                <th class="text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for agendamento in agendamentos_pendentes %}
+                            <tr>
+                                <td>
+                                    <strong>{{ agendamento.cliente.nome_completo }}</strong><br>
+                                </td>
+                                <td>
+                                    <strong>{{ agendamento.moto.marca }} {{ agendamento.moto.modelo }}</strong><br>
+                                    <small>Ano: {{ agendamento.moto.ano }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge-servico"> {{ agendamento.servico.nome }}</span>
+                                </td>
+                                <td>
+                                    <strong>{{ agendamento.data_hora|date:"d/m/Y" }}</strong><br>
+                                    <small>{{ agendamento.data_hora|date:"H:i" }}</small>
+                                </td>
+                                <td class="descricao-problema">
+                                    {% if agendamento.descricao_problema %}
+                                    {{ agendamento.descricao_problema|truncatewords:15 }}
+                                    {% else %}
+                                    <em>Sem descrição</em>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'pegar-agendamento' agendamento.id %}" class="btn-pegar-agendamento"
+                                        onclick="return confirm('Deseja pegar este agendamento e iniciar o atendimento?')">
+                                        Pegar Agendamento
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-message">
+                    <p> Nenhum agendamento pendente no momento.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+        {% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'Mecanico/base.html' %}
+{% load static %}
+
+{% block title %}Histórico - Mecânico{% endblock %}
+{% block content %}
+<main class="content">
+    <h1> Histórico de Serviços</h1>
+    <p>Todos os serviços que você realizou</p>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- Tabela de Histórico -->
+    <div class="info-section">
+        {% if todos_agendamentos %}
+        <div class="table-container">
+            <table class="table-historico">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Moto</th>
+                        <th>Serviço</th>
+                        <th>Data do Serviço</th>
+                        <th>Descrição do Cliente</th>
+                        <th>Descrição do Mecânico</th>
+                        <th>Preço</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agendamento in todos_agendamentos %}
+                    <tr class="linha-historico" data-status="{{ agendamento.status }}">
+                        <td>
+                            <strong class="agendamento-id">#{{ agendamento.id }}</strong>
+                        </td>
+                        <td>
+                            <strong>{{ agendamento.cliente.nome_completo }}</strong><br>
+                        </td>
+                        <td>
+                            <strong>{{ agendamento.moto.marca }}</strong><br>
+                            <small>
+                                {{ agendamento.moto.modelo }} ({{ agendamento.moto.ano }})
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge-servico">
+                                {{ agendamento.servico.nome }}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>{{ agendamento.data_hora|date:"d/m/Y" }}</strong><br>
+                            <small> {{ agendamento.data_hora|date:"H:i" }}</small>
+                        </td>
+                        <td class="descricao-problema">
+                            {% if agendamento.descricao_problema %}
+                            {{ agendamento.descricao_problema }}
+                            {% else %}
+                            <em>Sem descrição</em>
+                            {% endif %}
+                        </td>
+                        <td class="descricao-problema">
+                            {% if agendamento.status == 'concluido' and agendamento.descricao_mecanico %}
+                            <span>{{ agendamento.descricao_mecanico }}</span>
+                            {% else %}
+                            <em style="color: #999;">-</em>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">
+                            {% if agendamento.valor_servico %}
+                            <strong style="color: #28a745; font-size: 1.1em;">
+                                R$ {{ agendamento.valor_servico }}
+                            </strong>
+                            {% else %}
+                            <em style="color: #999;">-</em>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if agendamento.status == 'concluido' %}
+                            <span class="badge-status-concluido">
+                                ✓ Concluído
+                            </span>
+                            {% elif agendamento.status == 'cancelado' %}
+                            <span class="badge-status-cancelado">
+                                ✗ Cancelado
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-message-gradient">
+            <div class="icon"></div>
+            <h2>Nenhum Histórico Encontrado</h2>
+            <p>
+                Você ainda não concluiu ou cancelou nenhum serviço.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="text-center-container">
+        <a href="{% url 'dashboard-mecanico' %}" class="btn-voltar">
+            ← Voltar ao Início
+        </a>
+    </div>
+</main>
+
+{% endblock %}
