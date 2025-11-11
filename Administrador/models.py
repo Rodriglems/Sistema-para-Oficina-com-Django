@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import time
 
 
 class Servicos(models.Model):
@@ -108,3 +110,77 @@ class OrdemServico(models.Model):
             return f"OS #{self.id} - {self.agendamento}"
         except Exception:
             return f"OS #{self.id}"
+        
+        
+        
+        
+# Configurações adicionais para o sistema de agendamentos e ordens de serviço
+class ConfiguracaoOficina(models.Model):
+    nome_oficina = models.CharField(max_length=200, default="Minha Oficina")
+    endereco = models.TextField()
+    telefone = models.CharField(max_length=20)
+    email = models.EmailField()
+    cnpj = models.CharField(max_length=18)
+    horario_funcionamento_inicio = models.TimeField(default=time(8, 0))
+    horario_funcionamento_fim = models.TimeField(default=time(18, 0))
+    dias_funcionamento = models.CharField(max_length=100, default="Segunda a Sexta")
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    tema = models.CharField(max_length=20, default="azul", choices=[
+        ('azul', 'Azul Oficial'),
+        ('verde', 'Verde Mecânico'),
+        ('roxo', 'Roxo Premium'),
+        ('vermelho', 'Vermelho Dinâmico'),
+        ('escuro', 'Modo Escuro'),
+    ])
+    
+    def __str__(self):
+        return self.nome_oficina
+    
+class ConfiguracaoAgendamento(models.Model):
+    intervalo_agendamento = models.IntegerField(default=60, help_text="Intervalo em minutos")
+    antecedencia_minima = models.IntegerField(default=24, help_text="Horas de antecedência")
+    limite_agendamentos_dia = models.IntegerField(default=10)
+    permite_agendamento_feriados = models.BooleanField(default=False)
+    permite_reagendamento = models.BooleanField(default=True)
+    tempo_limite_cancelamento = models.IntegerField(default=2, help_text="Horas antes do agendamento")
+    
+    
+class ConfiguracaoNotificacao(models.Model):
+    email_confirmacao = models.BooleanField(default=True)
+    sms_lembrete = models.BooleanField(default=False)
+    notificar_24h_antes = models.BooleanField(default=True)
+    notificar_1h_antes = models.BooleanField(default=True)
+    email_cancelamento = models.BooleanField(default=True)
+    email_conclusao = models.BooleanField(default=True)
+    
+    
+class Peca(models.Model):
+    nome = models.CharField(max_length=200)
+    codigo = models.CharField(max_length=50, unique=True)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    estoque = models.IntegerField(default=0)
+    estoque_minimo = models.IntegerField(default=5)
+    fornecedor = models.CharField(max_length=200)
+    ativo = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"{self.nome} - {self.codigo}"
+
+
+class LogAuditoria(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    acao = models.CharField(max_length=100)
+    modelo = models.CharField(max_length=50)
+    objeto_id = models.IntegerField()
+    descricao = models.TextField()
+    data_hora = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.usuario.username} - {self.acao} - {self.data_hora}"
+    
+    class Meta:
+        ordering = ['-data_hora']
+
+
+ 

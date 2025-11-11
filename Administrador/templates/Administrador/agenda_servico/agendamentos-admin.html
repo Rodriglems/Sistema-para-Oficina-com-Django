@@ -3,17 +3,70 @@
 {% block content %}
         <div class="conteudo">
           <div class="header">
-            <h1>Agendamentos</h1>
+            <h1>
+              Agendamentos
+              {% if status_filter %}
+                <small style="color: #666; font-weight: normal; font-size: 18px;">
+                  - {{ status_filter|capfirst }}
+                </small>
+              {% endif %}
+            </h1>
             <a href="{% url 'agendar-servico-admin' %}" class="btn-agendar">+ Novo Agendamento</a>
           </div>
       <main>
+          <nav class="filter-nav" role="navigation" aria-label="Filtros de agendamento">
+            <ul>
+              <li>
+                <a href="{% url 'adm-agendamentos' %}" 
+                   class="{% if not status_filter %}active{% endif %}"
+                   title="Ver todos os agendamentos">
+                  Todos
+                  <span class="badge">{{ total_count }}</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'adm-agendamentos' %}?status=agendado" 
+                   class="{% if status_filter == 'agendado' %}active{% endif %}"
+                   title="Ver agendamentos pendentes">
+                  Agendados
+                  <span class="badge">{{ agendado_count }}</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'adm-agendamentos' %}?status=em_andamento" 
+                   class="{% if status_filter == 'em_andamento' %}active{% endif %}"
+                   title="Ver agendamentos em andamento">
+                  Em Andamento
+                  <span class="badge">{{ andamento_count }}</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'adm-agendamentos' %}?status=concluido" 
+                   class="{% if status_filter == 'concluido' %}active{% endif %}"
+                   title="Ver agendamentos concluídos">
+                  Concluídos
+                  <span class="badge">{{ concluido_count }}</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'adm-agendamentos' %}?status=cancelado" 
+                   class="{% if status_filter == 'cancelado' %}active{% endif %}"
+                   title="Ver agendamentos cancelados">
+                  Cancelados
+                  <span class="badge">{{ cancelado_count }}</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
           <table>
             <thead>
               <tr>
                 <th>Cliente</th>
                 <th>Data</th>
                 <th>Horário</th>
+                 <th>Moto</th>
                 <th>Serviço</th>
+                <th>Descrição</th>
                 <th>Mecânico</th>
                 <th>Status</th>
                 <th>Ações</th>
@@ -22,20 +75,62 @@
             <tbody>
               {% for agendamento in agendamentos %}
               <tr>
-                <td>{{ agendamento.cliente.nome_completo|default:agendamento.cliente.usuario.username }}</td>
+                <td>
+                  {% if agendamento.cliente %}
+                    {{ agendamento.cliente.nome_completo|default:agendamento.cliente.usuario.username }}
+                  {% else %}
+                    Cliente não definido
+                  {% endif %}
+                </td>
                 <td>{{ agendamento.data_hora|date:"d/m/Y" }}</td>
                 <td>{{ agendamento.data_hora|time:"H:i" }}</td>
+                <td>{{ agendamento.moto|default:"Não atribuído" }}</td>
                 <td>{{ agendamento.servico.nome }}</td>
-                <td>{{ agendamento.mecanico.nome_completo|default:agendamento.mecanico.usuario.username|default:"Não atribuído" }}</td>
-                <td><span class="status {{ agendamento.status }}">{{ agendamento.status|capfirst }}</span></td>
+                <td>{{ agendamento.descricao_problema|default:"Sem descrição" }}</td>
                 <td>
-                  <a href="{% url 'editar_agendamento' agendamento.id %}" class="link edit">Editar</a>
-                  <a href="{% url 'cancelar_agendamento' agendamento.id %}" class="link delete" onclick="return confirm('Tem certeza que deseja cancelar este agendamento?')">Cancelar</a>
+                  {% if agendamento.mecanico %}
+                    {{ agendamento.mecanico.nome_completo|default:agendamento.mecanico.usuario.username }}
+                  {% else %}
+                    Não atribuído
+                  {% endif %}
+                </td>
+                <td>
+                  {% if agendamento.status == 'agendado' %}
+                    <span class="status pendente">Agendado</span>
+                  {% elif agendamento.status == 'em_andamento' %}
+                    <span class="status confirmado">Em Andamento</span>
+                  {% elif agendamento.status == 'concluido' %}
+                    <span class="status concluido">Concluído</span>
+                  {% elif agendamento.status == 'cancelado' %}
+                    <span class="status cancelado">Cancelado</span>
+                  {% else %}
+                    <span class="status atrasado">{{ agendamento.status|capfirst }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if agendamento.status != 'cancelado' and agendamento.status != 'concluido' %}
+                    <a href="{% url 'editar_agendamento' agendamento.id %}" class="link edit" title="Editar agendamento">Editar</a>
+                  {% endif %}
+                  {% if agendamento.status == 'agendado' %}
+                    <a href="{% url 'cancelar_agendamento' agendamento.id %}" class="link delete" 
+                       title="Cancelar agendamento"
+                       onclick="return confirmarCancelamento('{% if agendamento.cliente %}{{ agendamento.cliente.nome_completo|default:agendamento.cliente.usuario.username }}{% else %}Cliente não definido{% endif %}')">Cancelar</a>
+                  {% endif %}
                 </td>
               </tr>
               {% empty %}
               <tr>
-                <td colspan="7">Nenhum agendamento encontrado.</td>
+                <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
+                  {% if status_filter %}
+                    Nenhum agendamento encontrado com o status "{{ status_filter|capfirst }}".
+                    <br><br>
+                    <a href="{% url 'adm-agendamentos' %}" class="link">Ver todos os agendamentos</a>
+                  {% else %}
+                    Nenhum agendamento encontrado.
+                    <br><br>
+                    <a href="{% url 'agendar-servico-admin' %}" class="link">Criar novo agendamento</a>
+                  {% endif %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -43,4 +138,48 @@
       </main>
     </div>
   </div>
+
+<script>
+// Adicionar indicador de carregamento ao clicar nos filtros
+document.addEventListener('DOMContentLoaded', function() {
+    const filterLinks = document.querySelectorAll('.filter-nav a');
+    
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Adicionar classe de loading ao link clicado
+            this.style.opacity = '0.7';
+            this.innerHTML += ' <small style="color: #999;">Carregando...</small>';
+            
+            // Remover active de todos os outros links
+            filterLinks.forEach(otherLink => {
+                if (otherLink !== this) {
+                    otherLink.classList.remove('active');
+                }
+            });
+            
+            // Adicionar active ao link atual se não for um reload da mesma página
+            this.classList.add('active');
+        });
+    });
+    
+    // Adicionar efeito hover nos badges
+    const badges = document.querySelectorAll('.filter-nav .badge');
+    badges.forEach(badge => {
+        badge.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.transition = 'transform 0.2s ease';
+        });
+        
+        badge.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+
+// Melhorar a confirmação de cancelamento
+function confirmarCancelamento(nomeCliente) {
+    return confirm(`Tem certeza que deseja cancelar o agendamento de ${nomeCliente}?\n\nEsta ação não pode ser desfeita.`);
+}
+</script>
+
 {% endblock %}

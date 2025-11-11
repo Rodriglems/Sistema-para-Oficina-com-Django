@@ -1,26 +1,121 @@
-{% extends 'Administrador/base.html' %}
+{% extends 'Administrador/base.html' %} {% block content %}
+<style>
+  .info-debug {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .card-clickable {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card-clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  .data-atual {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+</style>
 
-{% block content %}
-  <main class="conteudo">
-        <h1>Dashboard Geral</h1>
-        <div class="cards">
-          <div class="card">
-            <h3>Agendamentos Hoje</h3>
-            <p>{{ agendamentos_hoje }}</p>
-          </div>
-          <div class="card">
-            <h3>Serviços em Andamento</h3>
-            <p>{{ servicos_andamento }}</p>
-          </div>
-          <div class="card">
-            <h3>Mecânicos Ativos</h3>
-            <p>{{ total_mecanicos }}</p>
-          </div>
-        </div>
+<main class="conteudo">
+  <h1>Dashboard Geral</h1>
+  <div class="cards">
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-agendamentos' %}"
+      title="Ver agendamentos de hoje"
+    >
+      <h3> Agendamentos Para Hoje</h3>
+      <p>{{ agendamentos_hoje }}</p>
+      <small style="color: #666">Clique para ver detalhes</small>
+    </div>
 
-        <div class="grafico">
-          <h2>Agendamentos da Semana</h2>
-          <div class="grafico-placeholder">[gráfico aqui]</div>
-        </div>
-  </main>
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-agendamentos' %}?status=em_andamento"
+      title="Ver serviços em andamento"
+    >
+      <h3>Serviços em Andamento</h3>
+      <p>{{ servicos_andamento }}</p>
+      <small style="color: #666">Clique para gerenciar</small>
+    </div>
+
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-mecanico' %}"
+      title="Gerenciar mecânicos"
+    >
+      <h3>Mecânicos Ativos</h3>
+      <p>{{ total_mecanicos }}</p>
+      <small style="color: #666">Clique para gerenciar</small>
+    </div>
+
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-cliente' %}"
+      title="Gerenciar clientes"
+    >
+      <h3>Total de Clientes</h3>
+      <p>{{ total_clientes }}</p>
+      <small style="color: #666">Clique para gerenciar</small>
+    </div>
+
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-agendamentos' %}?status=agendado"
+      title="Ver agendamentos pendentes"
+    >
+      <h3>Agendamentos Pendentes</h3>
+      <p>{{ agendamentos_pendentes }}</p>
+      <small style="color: #666">Aguardando mecânico</small>
+    </div>
+
+    <div
+      class="card card-clickable"
+      data-url="{% url 'adm-agendamentos' %}?status=concluido"
+      title="Ver agendamentos concluídos"
+    >
+      <h3>Agendamentos Concluídos</h3>
+      <p>{{ agendamentos_concluidos }}</p>
+      <small style="color: #666">Trabalhos finalizados</small>
+    </div>
+  </div>
+ </main>
+
+<script>
+  // Adicionar navegação nos cards e efeitos hover
+  document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".card-clickable");
+
+    cards.forEach((card) => {
+      // Adicionar navegação ao clicar
+      card.addEventListener("click", function () {
+        const url = this.getAttribute("data-url");
+        if (url) {
+          window.location.href = url;
+        }
+      });
+
+      // Adicionar efeitos hover
+      card.addEventListener("mouseenter", function () {
+        this.style.backgroundColor = "#f8f9fa";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        this.style.backgroundColor = "";
+      });
+    });
+
+    // Debug: mostrar informações no console
+    console.log("Dashboard carregado com sucesso!");
+  });
+</script>
+
 {% endblock %}

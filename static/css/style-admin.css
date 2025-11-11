@@ -16,7 +16,7 @@
 
 /* Corpo da página */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background-color: #f4f6f9;
   color: var(--secondary-color);
   min-height: 100vh;
@@ -175,7 +175,8 @@ table {
   margin-top: 10px;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
 }
@@ -225,11 +226,112 @@ tr:nth-child(even) {
   color: #fff;
 }
 
-.status.pendente { background-color: #ffc107; }
-.status.concluido { background-color: #28a745; }
-.status.cancelado { background-color: #dc3545; }
-.status.confirmado { background-color: #007bff; }
-.status.atrasado { background-color: #6c757d; }
+.status.pendente {
+  background-color: #ffc107;
+}
+.status.concluido {
+  background-color: #28a745;
+}
+.status.cancelado {
+  background-color: #dc3545;
+}
+.status.confirmado {
+  background-color: #007bff;
+}
+.status.atrasado {
+  background-color: #6c757d;
+}
+
+/* Navegação de filtros */
+.filter-nav {
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0;
+}
+
+.filter-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-nav li {
+  position: relative;
+}
+
+.filter-nav a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.filter-nav a:hover {
+  color: var(--primary-color);
+  background-color: #f8f9fa;
+}
+
+.filter-nav a.active,
+.filter-nav a[href="?"]:not([href*="status"]) {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.filter-nav .badge {
+  display: inline-block;
+  background-color: #e9ecef;
+  color: #495057;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.filter-nav a.active .badge,
+.filter-nav a:hover .badge {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Responsividade para filtros */
+@media (max-width: 768px) {
+  .filter-nav ul {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .filter-nav a {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .filter-nav a {
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 0;
+  }
+
+  .filter-nav a:last-child {
+    border-bottom: none;
+  }
+}
 
 /* Responsividade */
 @media (max-width: 900px) {

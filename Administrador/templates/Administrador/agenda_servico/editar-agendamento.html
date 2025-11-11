@@ -1,0 +1,234 @@
+{% extends "Administrador/base.html" %}
+
+{% block content %}
+<style>
+  .alert {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid;
+  }
+
+  .alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+  }
+
+  .alert-error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+
+  .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+  }
+
+  .agendamentos-table .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .agendamentos-table label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+  }
+</style>
+<div class="conteudo">
+  <div class="header">
+    <h1>Editar Agendamento #{{ agendamento.id }}</h1>
+    <a href="{% url 'adm-agendamentos' %}" class="btn-agendar" style="background-color: #6c757d;">← Voltar</a>
+  </div>
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <main>
+    <form method="post" class="agendamentos-table" style="max-width: 800px;">
+      {% csrf_token %}
+
+      <!-- Informações Básicas -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: var(--primary-color);">Informações Básicas</h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+          <div>
+            <label for="cliente">Cliente</label>
+            <select id="cliente" name="cliente" required class="form-control">
+              {% for cliente in clientes %}
+              <option value="{{ cliente.id }}" {% if cliente.id==agendamento.cliente.id %}selected{% endif %}>
+                {{ cliente.nome_completo|default:cliente.usuario.username }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="mecanico">Mecânico</label>
+            <select id="mecanico" name="mecanico" class="form-control">
+              <option value="">Não atribuído</option>
+              {% for mecanico in mecanicos %}
+              <option value="{{ mecanico.id }}" {% if agendamento.mecanico and mecanico.id==agendamento.mecanico.id
+                %}selected{% endif %}>
+                {{ mecanico.nome_completo|default:mecanico.usuario.username }} - {{ mecanico.especialidade }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+          <div>
+            <label for="servico">Serviço</label>
+            <select id="servico" name="servico" required class="form-control" onchange="toggleOutroServico()">
+              {% for servico in servicos %}
+              <option value="{{ servico.id }}" {% if servico.id==agendamento.servico.id %}selected{% endif %}>
+                {{ servico.nome }}
+              </option>
+              {% endfor %}
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="status">Status</label>
+            <select id="status" name="status" required class="form-control">
+              <option value="agendado" {% if agendamento.status=='agendado' %}selected{% endif %}>Agendado</option>
+              <option value="em_andamento" {% if agendamento.status=='em_andamento' %}selected{% endif %}>Em Andamento
+              </option>
+              <option value="concluido" {% if agendamento.status=='concluido' %}selected{% endif %}>Concluído</option>
+              <option value="cancelado" {% if agendamento.status=='cancelado' %}selected{% endif %}>Cancelado</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="outro-servico-div" style="display: none; margin-top: 15px;">
+          <label for="outro_servico">Digite o serviço desejado</label>
+          <input type="text" id="outro_servico" name="outro_servico" placeholder="Ex: Troca de corrente"
+            class="form-control" />
+        </div>
+      </div>
+
+      <!-- Data e Hora -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: var(--primary-color);">Data e Hora</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label for="data">Data</label>
+            <input type="date" id="data" name="data" required class="form-control"
+              value="{{ agendamento.data_hora|date:'Y-m-d' }}" />
+          </div>
+          <div>
+            <label for="hora">Hora</label>
+            <input type="time" id="hora" name="hora" required class="form-control"
+              value="{{ agendamento.data_hora|time:'H:i' }}" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Descrição -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: var(--primary-color);">Descrição do Problema</h3>
+        <textarea name="descricao" rows="4" id="descricao" class="form-control"
+          placeholder="Descreva o problema ou observações...">{{ agendamento.descricao_problema }}</textarea>
+      </div>
+
+      <!-- Dados da Moto -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: var(--primary-color);">Dados da Moto</h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+          <div>
+            <label for="marca">Marca</label>
+            <input type="text" id="marca" name="marca" placeholder="Ex: Honda" required class="form-control"
+              value="{{ agendamento.moto.marca }}" />
+          </div>
+
+          <div>
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" name="modelo" placeholder="Ex: CG 160 Titan" required class="form-control"
+              value="{{ agendamento.moto.modelo }}" />
+          </div>
+
+          <div>
+            <label for="ano">Ano</label>
+            <input type="number" id="ano" name="ano" placeholder="Ex: 2022" required class="form-control"
+              value="{{ agendamento.moto.ano }}" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+        <a href="{% url 'adm-agendamentos' %}" class="btn-agendar"
+          style="background-color: #6c757d; text-decoration: none; display: inline-block; text-align: center;">
+          Cancelar
+        </a>
+        <button type="submit" class="btn-agendar" style="background-color: var(--primary-color);">
+          Salvar Alterações
+        </button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<script>
+  function toggleOutroServico() {
+    const servicoSelect = document.getElementById('servico');
+    const outroServicoDiv = document.getElementById('outro-servico-div');
+    const outroServicoInput = document.getElementById('outro_servico');
+    const servicoSelecionado = document.getElementById('mecanico').value;
+
+    if (servicoSelect.value === 'outro') {
+      outroServicoDiv.style.display = 'block';
+      outroServicoInput.required = true;
+    } else {
+      outroServicoDiv.style.display = 'none';
+      outroServicoInput.required = false;
+      outroServicoInput.value = '';
+    }
+  }
+
+  // Validação de status
+  document.getElementById('status').addEventListener('change', function () {
+    const status = this.value;
+    const confirmar = status === 'cancelado' ?
+      confirm('Tem certeza que deseja cancelar este agendamento?') :
+      status === 'concluido' ?
+        confirm('Tem certeza que este agendamento foi concluído?') : true;
+
+    if (!confirmar) {
+      this.value = '{{ agendamento.status }}'; // Volta ao valor original
+    }
+  });
+
+  // Validação de data/hora
+  document.addEventListener('DOMContentLoaded', function () {
+    const dataInput = document.getElementById('data');
+    const horaInput = document.getElementById('hora');
+
+    // Permitir datas passadas para agendamentos já existentes
+    const hoje = new Date();
+    const dataAgendamento = new Date('{{ agendamento.data_hora|date:"Y-m-d H:i" }}');
+
+    // Se é um agendamento futuro, manter validação de data mínima
+    if (dataAgendamento > hoje) {
+      dataInput.min = hoje.toISOString().split('T')[0];
+    }
+  });
+</script>
+
+{% endblock %}

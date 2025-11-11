@@ -1,5 +1,5 @@
 from django.urls import path
-from .Views import cliente, administrador  # Importar ambos os módulos
+from .Views import cliente, administrador, mecanico  # Importar todos os módulos
 from . import login as forms
 
 urlpatterns = [
@@ -25,6 +25,12 @@ urlpatterns = [
     # Admin - usando as funções do arquivo administrador.py
     path('dashboard-admin/', administrador.dashboard_admin, name='dashboard-admin'), 
     path('criar-admin/', administrador.criar_admin_padrao, name='criar-admin'),
+    
+    # Mecânico
+    path('dashboard-mecanico/', mecanico.dashboard_mecanico, name='dashboard-mecanico'),
+    path('painel-mecanico/', mecanico.painel_mecanico, name='painel-mecanico'),
+    path('logout-mecanico/', mecanico.logout_mecanico, name='logout-mecanico'),
+    
     path('adm-agendamentos/', administrador.agendamentos_admin, name='adm-agendamentos'),
     path('agendamento-admin/', administrador.agendar_servico_admin, name='agendar-servico-admin'), 
     
@@ -43,5 +49,9 @@ urlpatterns = [
     # CRUD de Agendamentos pelo Admin
     path('editar_agendamento/<int:id>/', administrador.editar_agendamento, name='editar_agendamento'),
     path('cancelar_agendamento/<int:id>/', administrador.cancelar_agendamento, name='cancelar_agendamento'),
+    
+    # Configurações do Administrador
+    path('configuracoes/', administrador.configuracoes_admin, name='configuracoes_admin'),
+    path('limpar-dados/', administrador.limpar_dados_sistema, name='limpar_dados_sistema'),
     
 ]

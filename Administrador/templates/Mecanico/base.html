@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        Painel do Mecânico - {% block title %}Dashboard{% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style-mecanico.css' %}" />
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    {% include 'Mecanico/components/navbar.html' %}
+    <!-- Sidebar do Mecânico -->
+    {% block content %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

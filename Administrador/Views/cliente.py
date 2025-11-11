@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout as django_logout
-from ..models import Moto, Servicos, Agendamento, OrdemServico, Mecanico
-from ..models import Cliente
-from django.contrib.auth import authenticate, login as login_user
+from django.contrib.auth import logout as django_logout, authenticate, login as login_user
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime
-from django.contrib.auth.models import User
-from ..models import Administrador
-from django.contrib import messages
+from ..models import Moto, Servicos, Agendamento, OrdemServico, Mecanico, Cliente, Administrador
 
 def Mostrar(request):
     # Exibe o dashboard do cliente com serviços, agendamentos futuros, último serviço e totais de status.
@@ -90,7 +87,7 @@ def login(request):
                 try:
                     mecanico_profile = Mecanico.objects.get(usuario=user)
                     messages.success(request, f'Bem-vindo, Mecânico {user.first_name or user.username}!')
-                    return redirect('dashboard-cliente')
+                    return redirect('dashboard-mecanico')
                 except Mecanico.DoesNotExist:
                     pass
                 

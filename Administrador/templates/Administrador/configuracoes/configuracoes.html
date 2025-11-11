@@ -1,0 +1,471 @@
+{% extends "Administrador/base.html" %} {% load static %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/configuracoes-admin.css' %}" />
+{% endblock %} {% block content %}
+<div class="conteudo">
+  <div class="header">
+    <h1>Configurações do Sistema</h1>
+  </div>
+
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
+  <main>
+    <div class="config-tabs">
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="oficina">
+          Dados da Oficina
+        </button>
+        <button class="tab-btn" data-tab="seguranca">Segurança</button>
+        <button class="tab-btn" data-tab="tema">Personalização</button>
+        <button class="tab-btn" data-tab="notificacoes">Notificações</button>
+      </nav>
+
+      <!-- Configurações da Oficina -->
+      <div id="oficina" class="tab-content active">
+        <form method="post" class="config-form">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="oficina" />
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nome_oficina">Nome da Oficina</label>
+              <input
+                type="text"
+                id="nome_oficina"
+                name="nome_oficina"
+                value="{{ config.nome_oficina|default:'Minha Oficina' }}"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input
+                type="tel"
+                id="telefone"
+                name="telefone"
+                value="{{ config.telefone|default:'' }}"
+                placeholder="(11) 99999-9999"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ config.email|default:'' }}"
+                placeholder="contato@oficina.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="cnpj">CNPJ</label>
+              <input
+                type="text"
+                id="cnpj"
+                name="cnpj"
+                value="{{ config.cnpj|default:'' }}"
+                placeholder="00.000.000/0000-00"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="endereco">Endereço Completo</label>
+              <textarea
+                id="endereco"
+                name="endereco"
+                rows="3"
+                placeholder="Rua, número, bairro, cidade, CEP"
+              >
+{{ config.endereco|default:'' }}</textarea
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="horario_inicio"
+                >Horário de Funcionamento - Início</label
+              >
+              <input
+                type="time"
+                id="horario_inicio"
+                name="horario_inicio"
+                value="{% if config.horario_funcionamento_inicio %}{{ config.horario_funcionamento_inicio|time:'H:i' }}{% else %}08:00{% endif %}"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="horario_fim">Horário de Funcionamento - Fim</label>
+              <input
+                type="time"
+                id="horario_fim"
+                name="horario_fim"
+                value="{% if config.horario_funcionamento_fim %}{{ config.horario_funcionamento_fim|time:'H:i' }}{% else %}18:00{% endif %}"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="dias_funcionamento">Dias de Funcionamento</label>
+              <input
+                type="text"
+                id="dias_funcionamento"
+                name="dias_funcionamento"
+                value="{{ config.dias_funcionamento|default:'Segunda a Sexta' }}"
+                placeholder="Segunda a Sexta"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-agendar">
+            Salvar Configurações
+          </button>
+        </form>
+      </div>
+
+      <!-- Personalização de Tema -->
+      <div id="tema" class="tab-content">
+        <form method="post" class="config-form">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="tema" />
+
+          <h3>Personalização do Sistema</h3>
+          <p>Escolha o tema e cores que melhor representam sua oficina</p>
+
+          <div class="theme-selector">
+            <div class="theme-options">
+              <div class="theme-option" data-theme="azul">
+                <div class="theme-preview azul-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-sidebar"></div>
+                  <div class="preview-content"></div>
+                </div>
+                <input type="radio" name="tema_sistema" value="azul" checked />
+                <label>Azul Oficial</label>
+              </div>
+
+              <div class="theme-option" data-theme="verde">
+                <div class="theme-preview verde-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-sidebar"></div>
+                  <div class="preview-content"></div>
+                </div>
+                <input type="radio" name="tema_sistema" value="verde" />
+                <label>Verde Mecânico</label>
+              </div>
+
+              <div class="theme-option" data-theme="laranja">
+                <div class="theme-preview laranja-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-sidebar"></div>
+                  <div class="preview-content"></div>
+                </div>
+                <input type="radio" name="tema_sistema" value="laranja" />
+                <label>Laranja Dinâmico</label>
+              </div>
+
+              <div class="theme-option" data-theme="roxo">
+                <div class="theme-preview roxo-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-sidebar"></div>
+                  <div class="preview-content"></div>
+                </div>
+                <input type="radio" name="tema_sistema" value="roxo" />
+                <label>Roxo Premium</label>
+              </div>
+
+              <div class="theme-option" data-theme="escuro">
+                <div class="theme-preview escuro-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-sidebar"></div>
+                  <div class="preview-content"></div>
+                </div>
+                <input type="radio" name="tema_sistema" value="escuro" />
+                <label>Modo Escuro</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="custom-colors">
+            <h4>Personalização Avançada</h4>
+            <div class="color-inputs">
+              <div class="color-group">
+                <label for="cor_primaria">Cor Primária</label>
+                <input
+                  type="color"
+                  id="cor_primaria"
+                  name="cor_primaria"
+                  value="#3b8d9e"
+                />
+              </div>
+              <div class="color-group">
+                <label for="cor_secundaria">Cor Secundária</label>
+                <input
+                  type="color"
+                  id="cor_secundaria"
+                  name="cor_secundaria"
+                  value="#2e7a87"
+                />
+              </div>
+              <div class="color-group">
+                <label for="cor_acento">Cor de Destaque</label>
+                <input
+                  type="color"
+                  id="cor_acento"
+                  name="cor_acento"
+                  value="#ff6b35"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-section">
+            <h4>Pré-visualização</h4>
+            <div class="live-preview">
+              <div class="preview-navbar">
+                <span>Sistema Oficina</span>
+                <div class="preview-nav-links">
+                  <span>Dashboard</span>
+                  <span>Agendamentos</span>
+                  <span class="active">Configurações</span>
+                </div>
+              </div>
+              <div class="preview-content-area">
+                <div class="preview-card">
+                  <h3>Exemplo de Card</h3>
+                  <p>
+                    Este é um exemplo de como ficará o sistema com as cores
+                    escolhidas
+                  </p>
+                  <div class="preview-btn">Botão de Exemplo</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-agendar">Aplicar Tema</button>
+        </form>
+      </div>
+
+      <!-- Configurações de Segurança -->
+      <div id="seguranca" class="tab-content">
+        <div class="security-section">
+          <h3>Configurações de Segurança</h3>
+
+          <!-- Alteração de Senha -->
+          <div class="security-card">
+            <h4>Alterar Senha do Administrador</h4>
+            <form method="post" class="password-form">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="alterar_senha" />
+
+              <div class="form-group">
+                <label for="senha_atual">Senha Atual</label>
+                <input
+                  type="password"
+                  id="senha_atual"
+                  name="senha_atual"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="nova_senha">Nova Senha</label>
+                <input
+                  type="password"
+                  id="nova_senha"
+                  name="nova_senha"
+                  required
+                  minlength="8"
+                />
+                <small>Mínimo 8 caracteres</small>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmar_senha">Confirmar Nova Senha</label>
+                <input
+                  type="password"
+                  id="confirmar_senha"
+                  name="confirmar_senha"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn-agendar btn-security">
+                🔐 Alterar Senha
+              </button>
+            </form>
+          </div>
+
+          <!-- Limpeza de Dados -->
+          <div class="security-card danger-zone">
+            <h4>Limpeza de Dados</h4>
+            <p>Remova dados desnecessários para otimizar o sistema</p>
+
+            <div class="cleanup-options">
+              <div class="cleanup-item">
+                <div class="cleanup-info">
+                  <strong>Agendamentos Antigos</strong>
+                  <p>
+                    Remove agendamentos cancelados ou concluídos com mais de 6
+                    meses
+                  </p>
+                </div>
+                <button
+                  onclick="cleanupData('agendamentos')"
+                  class="btn-cleanup"
+                >
+                  Limpar
+                </button>
+              </div>
+
+              <div class="cleanup-item">
+                <div class="cleanup-info">
+                  <strong>Logs do Sistema</strong>
+                  <p>Remove logs de acesso com mais de 3 meses</p>
+                </div>
+                <button onclick="cleanupData('logs')" class="btn-cleanup">
+                  Limpar
+                </button>
+              </div>
+
+              <div class="cleanup-item">
+                <div class="cleanup-info">
+                  <strong>Arquivos Temporários</strong>
+                  <p>Remove arquivos temporários e cache desnecessário</p>
+                </div>
+                <button onclick="cleanupData('temp')" class="btn-cleanup">
+                  Limpar
+                </button>
+              </div>
+
+              <div class="cleanup-item danger">
+                <div class="cleanup-info">
+                  <strong>Reset Completo dos Dados</strong>
+                  <p class="warning-text">
+                    ATENÇÃO: Esta ação remove TODOS os dados do sistema!
+                  </p>
+                </div>
+                <button onclick="resetAllData()" class="btn-cleanup btn-danger">
+                  Reset Total
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informações de Segurança -->
+          <div class="security-card">
+            <h4>Status de Segurança</h4>
+            <div class="security-status">
+              <div class="status-item">
+                <span class="status-label">Último login:</span>
+                <span class="status-value"
+                  >{{ request.user.last_login|date:"d/m/Y H:i" }}</span
+                >
+              </div>
+              <div class="status-item">
+                <span class="status-label">Sessões ativas:</span>
+                <span class="status-value">1</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label"
+                  >Tentativas de login falhadas hoje:</span
+                >
+                <span class="status-value">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Configurações de Notificações -->
+      <div id="notificacoes" class="tab-content">
+        <form method="post" class="config-form">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="notificacoes" />
+
+          <div class="notification-settings">
+            <div class="notification-section">
+              <h3>Notificações por Email</h3>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="email_confirmacao"
+                    {%
+                    if
+                    config_notificacao.email_confirmacao
+                    %}checked{%
+                    endif
+                    %}
+                  />
+                  Confirmação de agendamento
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="email_cancelamento"{% if config_notificacao.email_cancelamento %}checked{% endif %} />
+                  Cancelamento de agendamento
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="email_conclusao" {% if config_notificacao.email_conclusao %}checked{% endif %} />
+                  Conclusão do serviço
+                </label>
+              </div>
+            </div>
+            <div class="notification-section">
+              <h3>Lembretes</h3>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="lembrete_24h" {% if config_notificacao.notificar_24h_antes %}checked{% endif %} />
+                  Lembrete 24 horas antes
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="lembrete_24h" {% if config_notificacao.notificar_24h_antes %}checked{% endif %} />
+                  Conclusão do serviço
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="lembrete_1h" {% if config_notificacao.notificar_1h_antes %}checked{% endif %} />
+                  Lembrete 1 hora antes
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="lembrete_24h" {% if config_notificacao.notificar_24h_antes %}checked{% endif %} />
+                  Lembrete 24 horas antes
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="lembrete_1h" {% if config_notificacao.notificar_1h_antes %}checked{% endif %} />
+                  Lembrete 1 hora antes
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="sms_lembrete" {% if config_notificacao.sms_lembrete %}checked{% endif %} />
+                  SMS de lembrete (se disponível)
+                </label>
+              </div>  
+            </div>
+          </div>
+          <button type="submit" class="btn-agendar">
+            Salvar Configurações
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/configuracoes-admin.js' %}"></script>
+{% endblock %}
+ 

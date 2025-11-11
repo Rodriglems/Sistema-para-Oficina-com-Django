@@ -1,129 +1,175 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box; /* Inclui padding e border no cálculo da largura/altura */
+  font-family: "Segoe UI", sans-serif; /* Define fonte padrão para toda a página */
+  
 }
 
 body {
-  background-color: #f4f4f4;
-  padding: 40px;
+  background-color: #f7f7f7; /* Cor de fundo cinza claro */
+  display: flex; /* Layout flexbox horizontal (sidebar + conteúdo) */
+  overflow-y: hidden; /* Remove scroll vertical do body */
+  height: 100vh; /* Altura total da viewport */
+  width: 100vw; /* ✅ ADICIONAR: Ocupar toda a largura da viewport */
+  margin: 0; /* ✅ ADICIONAR: Garantir que não há margin */
 }
 
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+:root {
+  --primary-color: #f13636; /* Cor principal (azul-esverdeado) */
+  --secondary-color: #333; /* Cor secundária (cinza escuro) */
+  --background-color: #f7f7f7; /* Cor de fundo */
 }
 
-header h1 {
-  font-size: 28px;
-  color: #333;
-  margin-bottom: 20px;
+.sidebar {
+  width: 220px; /* Largura fixa da sidebar */
+  min-width: 220px; /* ✅ ADICIONAR: Largura mínima para não encolher */
+  height: 100vh; /* Altura total da tela */
+  background-color: var(--primary-color); /* Usa a cor primária definida */
+  padding: 20px; /* Espaçamento interno */
+  color: #fff; /* Texto branco */
+  display: flex; /* Layout flexbox vertical */
+  flex-direction: column; /* Organiza itens em coluna */
+  flex-shrink: 0; /* ✅ ADICIONAR: Impede que a sidebar encolha */
 }
 
-.tarefas h2 {
-  font-size: 22px;
-  margin-bottom: 15px;
-  color: #444;
+.logo {
+  max-width: 160px; /* Largura máxima da logo */
+  margin-bottom: 30px; /* Espaço abaixo da logo */
 }
 
-ul {
-  list-style: none;
+.sidebar nav ul {
+  list-style: none; /* Remove bullets da lista */
+  width: 100%; /* Ocupa toda a largura disponível */
 }
 
-li {
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+.sidebar nav ul li {
+  margin-bottom: 20px; /* Espaço entre cada item do menu */
 }
 
-.info p {
-  margin: 8px 0;
-  color: #555;
+.sidebar nav ul li a {
+  color: white; /* Cor do texto */
+  text-decoration: none; /* Remove sublinhado */
+  font-size: 16px; /* Tamanho da fonte */
+  display: block; /* Ocupa toda a largura disponível */
+  padding: 10px 15px; /* Espaçamento interno (topo/baixo esquerda/direita) */
+  border-radius: 6px; /* Bordas arredondadas */
+  transition: background-color 0.3s; /* Animação suave na mudança de cor */
 }
 
-.status {
-  display: inline-block;
-  margin-left: 15px;
-  padding: 4px 10px;
-  font-size: 13px;
-  font-weight: bold;
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Fundo semi-transparente no hover */
+}
+
+.sidebar-top {
+  flex-grow: 0; /* Não cresce para ocupar espaço extra */
+}
+
+.logout-button, .logout-button a {
+  background-color: var(--secondary-color); /* Cor de fundo diferente (cinza escuro) */
+  padding: 10px; /* Espaçamento interno */
+  border-radius: 6px; /* Bordas arredondadas */
+  text-align: center; /* Texto centralizado */
+  margin-top: 400px; /* ❌ PROBLEMA: Margin fixo - melhor usar margin-top: auto */
+  text-decoration: none; /* Remove sublinhado do link */
+  color: white; /* Texto branco */
+}
+
+.content {
+  flex: 1; /* ✅ Ocupa TODO o espaço restante */
+  width: 100%; /* ✅ ADICIONAR: Garantir largura total */
+  max-width: none; /* ✅ ADICIONAR: Remover qualquer limitação de largura */
+  padding: 40px; /* Espaçamento interno */
+  overflow-y: auto; /* Permite scroll vertical se necessário */
+  background-color: #f7f7f7; /* ✅ ADICIONAR: Cor de fundo */
+}
+
+.content h1 {
+  color: var(--secondary-color); /* Cor do título (cinza escuro) */
+  margin-bottom: 30px; /* Espaço abaixo do título */
+}
+
+.cards {
+  display: grid; /* Layout em grade */
+  grid-template-columns: 1fr 1fr 1fr; /* 3 colunas iguais */
+  gap: 25px; /* Espaço entre os cards */
+  width: 100%; /* ✅ Largura total do container pai */
+  max-width: none; /* ✅ ADICIONAR: Sem limitação de largura máxima */
+  padding: 0 10px; /* Pequeno padding lateral */
+}
+
+.card {
+  background-color: #fff; /* Fundo branco */
+  padding: 20px; /* Espaçamento interno */
+  border-radius: 12px; /* Bordas bem arredondadas */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07); /* Sombra sutil */
+  border-left: 5px solid var(--primary-color); /* Borda colorida à esquerda */
+}
+
+.card h2 {
+  font-size: 18px; /* Tamanho da fonte */
+  color: var(--primary-color); /* Cor do título (azul-esverdeado) */
+  margin-bottom: 10px; /* Espaço abaixo do título */
+}
+
+.card p {
+  margin-bottom: 8px; /* Espaço entre parágrafos */
+  font-size: 15px; /* Tamanho da fonte */
+}
+
+.btn-agendar {
+  display: inline-block; /* Comporta-se como botão */
+  margin-top: 30px; /* Espaço acima do botão */
+  padding: 12px 20px; /* Espaçamento interno (vertical horizontal) */
+  background-color: var(--primary-color); /* Cor de fundo principal */
+  color: #fff; /* Texto branco */
+  border-radius: 8px; /* Bordas arredondadas */
+  text-decoration: none; /* Remove sublinhado (caso seja link) */
+  font-weight: bold; /* Texto em negrito */
+  transition: background-color 0.3s; /* Animação suave na mudança de cor */
+  margin-left: 20px;
+}
+
+.btn-agendar:hover {
+  background-color: var(--secondary-color); /* Mesma cor - não há mudança visual */
+}
+
+.btn-cancelar{
+  background-color: rgb(249, 37, 37);
+  border-radius: 5px;
   color: white;
-  border-radius: 6px;
-}
-
-.status.pendente {
-  background-color: #ffc107;
-}
-
-.status.andamento {
-  background-color: #17a2b8;
-}
-
-.status.concluido {
-  background-color: #28a745;
-}
- 
-
-.acoes {
-  margin-top: 15px;
-}
-
-.acoes textarea {
-  width: 100%;
-  height: 60px;
-  padding: 10px;
-  resize: none;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.acoes button {
-  padding: 10px 20px;
-  background-color: #28a745;
+  padding: 6px 13px;
   border: none;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: darkred;
+}
+
+.btn-editar{
+  background-color: rgb(242, 170, 36);
+  border-radius: 5px;
   color: white;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.acoes button:hover {
-  background-color: #218838;
-}
-
-nav {
-  margin: 20px 0;
-}
-
-nav button {
-  padding: 10px 20px;
-  margin-right: 10px;
-  background-color: #ddd;
+  padding: 6px 13px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
 }
 
-nav button:hover {
-  background-color: #bbb;
+.btn-editar:hover {
+  background-color: rgb(201, 116, 11);
 }
 
-.aba {
-  display: none;
-}
-
-.aba.ativa {
-  display: block;
+.agendamentos-table .card {
+  border: 1px solid #eee; /* Borda sutil */
+  border-radius: 8px; /* Bordas arredondadas */
+  padding: 12px; /* Espaçamento interno */
+  margin-bottom: 12px; /* Espaço entre os cards */
+  
 }
