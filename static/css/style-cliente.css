@@ -86,8 +86,10 @@ body {
   width: 100%; /* ✅ ADICIONAR: Garantir largura total */
   max-width: none; /* ✅ ADICIONAR: Remover qualquer limitação de largura */
   padding: 40px; /* Espaçamento interno */
+  padding-bottom: 20px; /* Espaço extra antes do rodapé */
   overflow-y: auto; /* Permite scroll vertical se necessário */
   background-color: #f7f7f7; /* ✅ ADICIONAR: Cor de fundo */
+  min-height: calc(100vh - 200px); /* Garante altura mínima */
 }
 
 .content h1 {

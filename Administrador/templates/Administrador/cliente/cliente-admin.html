@@ -1,44 +1,43 @@
 {% extends "Administrador/base.html" %}
 
 {% block content %}
-        <div class="conteudo">
-          <div class="header">
-            <h1>Clientes</h1>
-            <a href="{% url 'admin_cliente_cadastrar' %}" class="btn-agendar">+ Novo Cliente</a>
-          </div>
-          <main>
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Telefone</th>
-                <th>Email</th>
-                <th>Endereço</th>
-                <th>Último Serviço</th>
-                <th>Usuario</th>
-                <th>Senha</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for cliente in clientes %}
-              <tr>
-                <td>{{ cliente.nome_completo }}</td>
-                <td>{{ cliente.cpf }}</td>
-                <td>{{ cliente.telefone }}</td>
-                <td>{{ cliente.email }}</td>
-                <td>{{ cliente.endereco }}</td>
-                <td>{{ cliente.ultimo_servico }}</td>
-                <td>{{ cliente.usuario }}</td>
-                <td>{{ cliente.senha }}</td>
-                <td>
-                  <a href="{% url 'editar_cliente' cliente.pk %}" class="link edit">Editar</a>
-                  <a href="{% url 'excluir_cliente' cliente.pk %}" onclick="return confirm('Tem certeza que deseja excluir esse usuario?')" class="link delete">Excluir</a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </main>
-{% endblock %}
+<div class="conteudo">
+  <div class="header">
+    <h1>Clientes</h1>
+    <a href="{% url 'admin_cliente_cadastrar' %}" class="btn-agendar">+ Novo Cliente</a>
+  </div>
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Telefone</th>
+          <th>Email</th>
+          <th>Endereço</th>
+          <th>Usuario</th>
+          <th>Senha</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.nome_completo }}</td>
+          <td>{{ cliente.cpf }}</td>
+          <td>{{ cliente.telefone }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>{{ cliente.endereco }}</td>
+          <td>{{ cliente.usuario }}</td>
+          <td>*********</td>
+          <td>
+            <a href="{% url 'editar_cliente' cliente.pk %}" class="link edit">Editar</a>
+            <a href="{% url 'excluir_cliente' cliente.pk %}"
+              onclick="return confirm('Tem certeza que deseja excluir esse usuario?')" class="link delete">Excluir</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+  {% endblock %}

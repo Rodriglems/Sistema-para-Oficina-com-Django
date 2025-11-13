@@ -163,6 +163,78 @@ body {
   color: #666;
 }
 
+/* Container de Gráficos no Dashboard */
+.graficos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.grafico-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grafico-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.grafico-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.grafico-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* Responsividade para gráficos */
+@media (max-width: 1200px) {
+  .graficos-container {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .graficos-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .grafico-card {
+    padding: 20px;
+  }
+  
+  .grafico-wrapper {
+    height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grafico-card h3 {
+    font-size: 16px;
+  }
+  
+  .grafico-wrapper {
+    height: 250px;
+  }
+}
+
 img {
   max-width: 180px;
   height: auto;

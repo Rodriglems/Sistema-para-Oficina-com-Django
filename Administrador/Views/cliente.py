@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime
-from ..models import Moto, Servicos, Agendamento, OrdemServico, Mecanico, Cliente, Administrador
+from ..models import Moto, Servicos, Agendamento, OrdemServico, Mecanico, Cliente, Administrador, ConfiguracaoOficina
 
 def Mostrar(request):
     # Dashboard profissional do cliente com estatísticas completas
@@ -72,6 +72,8 @@ def Mostrar(request):
     
     return render(request, 'Cliente/dasbord-cliente.html', context)
 
+
+
 def login(request):
     """View de login unificado para clientes e administradores"""
     if request.method == 'POST':
@@ -128,19 +130,25 @@ def login(request):
     
     return render(request, 'LoginSistemy/login.html')
 
+
+
 def logout_view(request):
     django_logout(request)
     messages.success(request, 'Logout realizado com sucesso!')
     return redirect('login')
 
+
+
 def dashboard_cliente(request):
     """Dashboard do cliente - redireciona para a função Mostrar"""
     return Mostrar(request)
 
+
+
 def agendar_servico(request):
     # Verificar se o usuário está autenticado
     if not request.user.is_authenticated:
-        messages.error(request, '❌ Você precisa estar logado para fazer um agendamento!')
+        messages.error(request, ' Você precisa estar logado para fazer um agendamento!')
         return redirect('login')
     
     try:
@@ -163,14 +171,14 @@ def agendar_servico(request):
         try:
             # Validar campos obrigatórios
             if not all([nome_servico, descricao, data, hora]):
-                messages.error(request, '❌ Todos os campos são obrigatórios!')
+                messages.error(request, ' Todos os campos são obrigatórios!')
                 return redirect('agendar-servico')
             
             # Obter ou criar moto
             if moto_id and moto_id != 'nova':
                 # Usar moto cadastrada
                 moto = get_object_or_404(Moto, id=moto_id, cliente=cliente)
-                print(f"✅ Usando moto cadastrada: {moto.marca} {moto.modelo} (ID: {moto.id})")
+                print(f" Usando moto cadastrada: {moto.marca} {moto.modelo} (ID: {moto.id})")
             else:
                 # Criar nova moto
                 marca = request.POST.get('marca')
@@ -178,7 +186,7 @@ def agendar_servico(request):
                 ano = request.POST.get('ano')
                 
                 if not all([marca, modelo, ano]):
-                    messages.error(request, '❌ Para cadastrar nova moto, preencha marca, modelo e ano!')
+                    messages.error(request, ' Para cadastrar nova moto, preencha marca, modelo e ano!')
                     return redirect('agendar-servico')
                 
                 moto = Moto.objects.create(
@@ -187,20 +195,20 @@ def agendar_servico(request):
                     modelo=modelo,
                     ano=int(ano)
                 )
-                print(f"✅ Nova moto criada: {moto.marca} {moto.modelo} (ID: {moto.id})")
+                print(f" Nova moto criada: {moto.marca} {moto.modelo} (ID: {moto.id})")
             
             # Criar ou buscar o serviço
             servico, servico_created = Servicos.objects.get_or_create(
                 nome=nome_servico,
                 defaults={'descricao': descricao}
             )
-            print(f"✅ Serviço {'CRIADO' if servico_created else 'ENCONTRADO'}: {servico.nome} (ID: {servico.id})")
+            print(f"Serviço {'CRIADO' if servico_created else 'ENCONTRADO'}: {servico.nome} (ID: {servico.id})")
             
             # Converter data e hora para datetime
             data_hora_str = f"{data} {hora}"
             data_hora = datetime.strptime(data_hora_str, '%Y-%m-%d %H:%M')
             data_hora = timezone.make_aware(data_hora)
-            print(f"✅ Data/Hora formatada: {data_hora}")
+            print(f" Data/Hora formatada: {data_hora}")
             
             # Buscar ou criar cliente - IMPORTANTE: garantir que o perfil existe
             cliente, cliente_created = Cliente.objects.get_or_create(
@@ -213,7 +221,7 @@ def agendar_servico(request):
                     'cpf': '000.000.000-00'
                 }
             )
-            print(f"✅ Cliente {'CRIADO' if cliente_created else 'ENCONTRADO'}: {cliente.nome_completo} (ID: {cliente.id})")
+            print(f"Cliente {'CRIADO' if cliente_created else 'ENCONTRADO'}: {cliente.nome_completo} (ID: {cliente.id})")
             
             # Criar agendamento com STATUS AGENDADO
             agendamento = Agendamento.objects.create(
@@ -251,6 +259,8 @@ def agendar_servico(request):
     }
     return render(request, 'Cliente/agendar-cliente.html', context)
 
+
+
 def listas_servicos(request):
     """Exibe a lista de motos, serviços e agendamentos"""
     try:
@@ -283,6 +293,8 @@ def listas_servicos(request):
             'ordens_servico': [],
         })
 
+
+
 def ordens_servico(request):
     """Lista todas as ordens de serviço"""
     try:
@@ -301,6 +313,8 @@ def ordens_servico(request):
     except Exception as e:
         messages.error(request, f'Erro ao carregar ordens de serviço: {e}')
         return render(request, 'Cliente/ordens_servico.html', {'ordens_servico': []})
+
+
 
 def criar_ordem_servico(request, agendamento_id):
     """Cria uma ordem de serviço a partir de um agendamento"""
@@ -331,11 +345,15 @@ def criar_ordem_servico(request, agendamento_id):
         messages.error(request, f'Erro ao criar ordem de serviço: {e}')
         return redirect('lista-servicos')
 
+
+
 # Funções implementadas
 def agendar_cliente(request):
     """Redireciona para a função de agendamento principal"""
     # Corrige nome da rota: 'agendar-servico' conforme urls.py
     return redirect('agendar-servico')
+
+
 
 def agendamentos_cliente(request):
     """Mostra agendamentos específicos do cliente logado"""
@@ -400,6 +418,7 @@ def cancelar_agendamento_cliente(request, agendamento_id):
     except Exception as e:
         messages.error(request, f'Erro ao cancelar agendamento: {e}')
         return redirect('agendamentos-cliente')
+
 
 
 def remarcar_agendamento_cliente(request, agendamento_id):
@@ -483,6 +502,8 @@ def remarcar_agendamento_cliente(request, agendamento_id):
     except Exception as e:
         messages.error(request, f'Erro ao remarcar agendamento: {e}')
         return redirect('agendamentos-cliente')
+
+
 
 def historico_cliente(request):
     """Mostra histórico completo de serviços do cliente"""

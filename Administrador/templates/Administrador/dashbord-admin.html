@@ -9,86 +9,131 @@
     margin-bottom: 20px;
     font-size: 14px;
   }
+
   .card-clickable {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
   }
+
   .card-clickable:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
+
   .data-atual {
     color: #666;
     font-size: 14px;
     margin-bottom: 20px;
+  }
+
+  /* Estilos para os gráficos */
+  .graficos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .grafico-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .grafico-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+  }
+
+  .grafico-wrapper {
+    position: relative;
+    height: 300px;
+  }
+
+  @media (max-width: 768px) {
+    .graficos-container {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
 <main class="conteudo">
   <h1>Dashboard Geral</h1>
   <div class="cards">
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-agendamentos' %}"
-      title="Ver agendamentos de hoje"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-agendamentos' %}" title="Ver agendamentos de hoje">
       <h3> Agendamentos Para Hoje</h3>
       <p>{{ agendamentos_hoje }}</p>
       <small style="color: #666">Clique para ver detalhes</small>
     </div>
 
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-agendamentos' %}?status=em_andamento"
-      title="Ver serviços em andamento"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-agendamentos' %}?status=em_andamento"
+      title="Ver serviços em andamento">
       <h3>Serviços em Andamento</h3>
       <p>{{ servicos_andamento }}</p>
       <small style="color: #666">Clique para gerenciar</small>
     </div>
 
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-mecanico' %}"
-      title="Gerenciar mecânicos"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-mecanico' %}" title="Gerenciar mecânicos">
       <h3>Mecânicos Ativos</h3>
       <p>{{ total_mecanicos }}</p>
       <small style="color: #666">Clique para gerenciar</small>
     </div>
 
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-cliente' %}"
-      title="Gerenciar clientes"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-cliente' %}" title="Gerenciar clientes">
       <h3>Total de Clientes</h3>
       <p>{{ total_clientes }}</p>
       <small style="color: #666">Clique para gerenciar</small>
     </div>
 
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-agendamentos' %}?status=agendado"
-      title="Ver agendamentos pendentes"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-agendamentos' %}?status=agendado"
+      title="Ver agendamentos pendentes">
       <h3>Agendamentos Pendentes</h3>
       <p>{{ agendamentos_pendentes }}</p>
       <small style="color: #666">Aguardando mecânico</small>
     </div>
 
-    <div
-      class="card card-clickable"
-      data-url="{% url 'adm-agendamentos' %}?status=concluido"
-      title="Ver agendamentos concluídos"
-    >
+    <div class="card card-clickable" data-url="{% url 'adm-agendamentos' %}?status=concluido"
+      title="Ver agendamentos concluídos">
       <h3>Agendamentos Concluídos</h3>
       <p>{{ agendamentos_concluidos }}</p>
       <small style="color: #666">Trabalhos finalizados</small>
     </div>
   </div>
- </main>
 
+  <!-- Seção de Gráficos -->
+  <div class="graficos-container">
+    <!-- Gráfico de Pizza: Agendamentos por Status -->
+    <div class="grafico-card">
+      <h3> Agendamentos por Status</h3>
+      <div class="grafico-wrapper">
+        <canvas id="graficoStatus"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico de Linha: Agendamentos por Mês -->
+    <div class="grafico-card">
+      <h3> Agendamentos dos Últimos Meses</h3>
+      <div class="grafico-wrapper">
+        <canvas id="graficoMeses"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico de Barras: Serviços Mais Solicitados -->
+    <div class="grafico-card">
+      <h3> Top 5 Serviços Mais Solicitados</h3>
+      <div class="grafico-wrapper">
+        <canvas id="graficoServicos"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
   // Adicionar navegação nos cards e efeitos hover
   document.addEventListener("DOMContentLoaded", function () {
@@ -115,6 +160,191 @@
 
     // Debug: mostrar informações no console
     console.log("Dashboard carregado com sucesso!");
+
+    // ==================== GRÁFICOS ====================
+
+    // 1. Gráfico de Pizza - Agendamentos por Status
+    const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
+    const graficoStatus = new Chart(ctxStatus, {
+      type: 'doughnut',
+      data: {
+        labels: ['Agendados', 'Em Andamento', 'Concluídos', 'Cancelados'],
+        datasets: [{
+          data: [
+            {{ agendamentos_pendentes }},
+        {{ servicos_andamento }},
+            {{ agendamentos_concluidos }},
+    {{ agendamentos_cancelados }}
+          ],
+    backgroundColor: [
+    '#ffc107', // Amarelo - Agendados
+    '#17a2b8', // Azul - Em Andamento
+    '#28a745', // Verde - Concluídos
+    '#dc3545'  // Vermelho - Cancelados
+  ],
+    borderWidth: 2,
+    borderColor: '#fff'
+        }]
+      },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 15,
+          font: {
+            size: 12
+          }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const label = context.label || '';
+            const value = context.parsed || 0;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return `${label}: ${value} (${percentage}%)`;
+          }
+        }
+      }
+    }
+  }
+    });
+
+  // 2. Gráfico de Linha - Agendamentos por Mês
+  const ctxMeses = document.getElementById('graficoMeses').getContext('2d');
+  const graficoMeses = new Chart(ctxMeses, {
+    type: 'line',
+    data: {
+      labels: {{ meses_labels| safe }},
+  datasets: [{
+    label: 'Agendamentos',
+    data: {{ meses_valores| safe }},
+    borderColor: '#007bff',
+    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+    borderWidth: 3,
+    fill: true,
+    tension: 0.4,
+    pointRadius: 5,
+    pointBackgroundColor: '#007bff',
+    pointBorderColor: '#fff',
+    pointBorderWidth: 2,
+    pointHoverRadius: 7
+        }]
+      },
+  options: {
+    responsive: true,
+      maintainAspectRatio: false,
+        plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+            titleFont: {
+          size: 14
+        },
+        bodyFont: {
+          size: 13
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+          ticks: {
+          stepSize: 1,
+            font: {
+            size: 11
+          }
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      x: {
+        ticks: {
+          font: {
+            size: 11
+          }
+        },
+        grid: {
+          display: false
+        }
+      }
+    }
+  }
+    });
+
+  // 3. Gráfico de Barras - Serviços Mais Solicitados
+  const ctxServicos = document.getElementById('graficoServicos').getContext('2d');
+  const graficoServicos = new Chart(ctxServicos, {
+    type: 'bar',
+    data: {
+      labels: {{ servicos_labels| safe }},
+  datasets: [{
+    label: 'Quantidade',
+    data: {{ servicos_valores| safe }},
+    backgroundColor: [
+    '#007bff',
+    '#28a745',
+    '#ffc107',
+    '#17a2b8',
+    '#6f42c1'
+  ],
+    borderWidth: 0,
+    borderRadius: 5
+        }]
+      },
+  options: {
+    responsive: true,
+      maintainAspectRatio: false,
+        plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+            callbacks: {
+          label: function(context) {
+            return `Solicitações: ${context.parsed.y}`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+          ticks: {
+          stepSize: 1,
+            font: {
+            size: 11
+          }
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      x: {
+        ticks: {
+          font: {
+            size: 11
+          },
+          maxRotation: 45,
+            minRotation: 0
+        },
+        grid: {
+          display: false
+        }
+      }
+    }
+  }
+    });
   });
 </script>
 

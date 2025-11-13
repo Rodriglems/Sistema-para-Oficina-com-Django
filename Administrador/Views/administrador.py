@@ -33,6 +33,39 @@ def dashboard_admin(request):
         servicos_andamento = Agendamento.objects.filter(status='em_andamento').count()
         agendamentos_pendentes = Agendamento.objects.filter(status='agendado').count()
         agendamentos_concluidos = Agendamento.objects.filter(status='concluido').count()
+        agendamentos_cancelados = Agendamento.objects.filter(status='cancelado').count()
+        
+        # Dados para gráficos
+        from django.db.models import Count
+        from django.db.models.functions import TruncMonth
+        import json
+        
+        # Agendamentos por mês (últimos 6 meses)
+        seis_meses_atras = date.today() - timedelta(days=180)
+        agendamentos_por_mes = Agendamento.objects.filter(
+            data_hora__date__gte=seis_meses_atras
+        ).annotate(
+            mes=TruncMonth('data_hora')
+        ).values('mes').annotate(
+            total=Count('id')
+        ).order_by('mes')
+        
+        # Preparar dados para o gráfico de linha
+        meses_labels = []
+        meses_valores = []
+        for item in agendamentos_por_mes:
+            meses_labels.append(item['mes'].strftime('%b/%Y'))
+            meses_valores.append(item['total'])
+        
+        # Serviços mais solicitados (Top 5)
+        servicos_populares = Agendamento.objects.values(
+            'servico__nome'
+        ).annotate(
+            total=Count('id')
+        ).order_by('-total')[:5]
+        
+        servicos_labels = [s['servico__nome'] for s in servicos_populares]
+        servicos_valores = [s['total'] for s in servicos_populares]
         
         context = {
             'total_clientes': total_clientes,
@@ -43,6 +76,12 @@ def dashboard_admin(request):
             'servicos_andamento': servicos_andamento,
             'agendamentos_pendentes': agendamentos_pendentes,
             'agendamentos_concluidos': agendamentos_concluidos,
+            'agendamentos_cancelados': agendamentos_cancelados,
+            # Dados para gráficos
+            'meses_labels': json.dumps(meses_labels),
+            'meses_valores': json.dumps(meses_valores),
+            'servicos_labels': json.dumps(servicos_labels),
+            'servicos_valores': json.dumps(servicos_valores),
         }
         
         return render(request, 'Administrador/dashbord-admin.html', context)
