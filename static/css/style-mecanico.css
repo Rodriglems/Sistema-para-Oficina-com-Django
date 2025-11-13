@@ -25,7 +25,7 @@ body {
   width: 220px; /* Largura fixa da sidebar */
   min-width: 220px; /* ✅ ADICIONAR: Largura mínima para não encolher */
   height: 100vh; /* Altura total da tela */
-  background-color: var(--primary-color); /* Usa a cor primária definida */
+ background: linear-gradient(335deg, var(--secondary-color) 0%, #6cddf3 100%);
   padding: 20px; /* Espaçamento interno */
   color: #fff; /* Texto branco */
   display: flex; /* Layout flexbox vertical */
@@ -207,13 +207,13 @@ body {
 }
 
 .headp {
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   border-bottom: 2px solid #dee2e6;
   color: rgb(228, 222, 222);
 }
 
 .table-agendamentos thead th {
-  padding: 12px;
+  padding: 15px;
   text-align: left;
   font-weight: 600;
 }
@@ -691,7 +691,7 @@ body {
 }
 
 .table-historico thead tr {
-  background-color: #343a40;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
 }
 

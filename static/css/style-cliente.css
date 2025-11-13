@@ -25,7 +25,7 @@ body {
   width: 220px; /* Largura fixa da sidebar */
   min-width: 220px; /* ✅ ADICIONAR: Largura mínima para não encolher */
   height: 100vh; /* Altura total da tela */
-  background-color: var(--primary-color); /* Usa a cor primária definida */
+ background: linear-gradient(335deg, var(--secondary-color) 0%, #6cddf3 100%);
   padding: 20px; /* Espaçamento interno */
   color: #fff; /* Texto branco */
   display: flex; /* Layout flexbox vertical */
@@ -76,7 +76,7 @@ body {
   padding: 10px; /* Espaçamento interno */
   border-radius: 6px; /* Bordas arredondadas */
   text-align: center; /* Texto centralizado */
-  margin-top: 400px; /* ❌ PROBLEMA: Margin fixo - melhor usar margin-top: auto */
+  margin-top: 350px; /* ❌ PROBLEMA: Margin fixo - melhor usar margin-top: auto */
   text-decoration: none; /* Remove sublinhado do link */
   color: white; /* Texto branco */
 }
@@ -285,7 +285,7 @@ body {
 }
 
 .table-historico thead {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #2a6d7a 100%);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
 }
 
@@ -366,7 +366,7 @@ body {
   display: inline-block;
   padding: 6px 12px;
   background: #f8d7da;
-  color: #721c24;
+  color: #d31225;
   border: 1px solid #f5c6cb;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -454,7 +454,7 @@ body {
 .btn-novo-agendamento {
   display: inline-block;
   padding: 12px 25px;
-  background: var(--primary-color);
+ background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -504,7 +504,7 @@ body {
 }
 
 .table-agendamentos-cliente thead {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #2a6d7a 100%);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
 }
 
@@ -543,14 +543,13 @@ body {
 }
 
 .badge-andamento {
+  background-color: #ffc107;
+  color: #000;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
   display: inline-block;
-  padding: 6px 12px;
-  background: #fff3cd;
-  color: #664d03;
-  border: 1px solid #ffecb5;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
 }
 
 .acoes-buttons {
@@ -806,7 +805,7 @@ body {
 .btn-nova-moto {
   display: inline-block;
   padding: 12px 25px;
-  background: var(--primary-color);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -840,7 +839,7 @@ body {
 }
 
 .moto-card-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #2a6d7a 100%);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a6d7a 100%);
   color: white;
   padding: 20px;
   display: flex;
@@ -1333,7 +1332,7 @@ body {
 
 .badge-agendado {
   background: #e3f2fd;
-  color: #1976d2;
+  color: #0875d4;
 }
 
 .badge-em_andamento {
@@ -1541,5 +1540,165 @@ body {
   
   .dashboard-main {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   MENU HAMBÚRGUER (MOBILE)
+   ============================================ */
+
+/* Botão Hambúrguer - Visível apenas em mobile */
+.hamburger-menu {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: linear-gradient(135deg, #3b8d9e 0%, #2c6e7d 100%);
+  border: none;
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.hamburger-menu:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59, 141, 158, 0.3);
+}
+
+.hamburger-menu span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background-color: white;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Animação do botão quando a sidebar está aberta */
+.sidebar-open .hamburger-menu span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.sidebar-open .hamburger-menu span:nth-child(2) {
+  opacity: 0;
+}
+
+.sidebar-open .hamburger-menu span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Overlay escuro atrás da sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Header da sidebar com logo e botão fechar */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Botão fechar (X) dentro da sidebar - apenas mobile */
+.close-sidebar {
+  display: none;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.close-sidebar:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.close-sidebar svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  /* Mostrar botão hambúrguer */
+  .hamburger-menu {
+    display: flex;
+  }
+
+  /* Mostrar botão fechar dentro da sidebar */
+  .close-sidebar {
+    display: flex;
+  }
+
+  /* Sidebar escondida por padrão em mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Escondida fora da tela */
+    width: 280px;
+    height: 100vh;
+    z-index: 999;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Sidebar visível quando active */
+  .sidebar.active {
+    left: 0;
+  }
+
+  /* Content ocupa toda a largura em mobile */
+  .content {
+    width: 100%;
+    margin-left: 0;
+    padding: 80px 20px 20px 20px; /* Espaço extra no topo para o botão hambúrguer */
+  }
+
+  /* Prevenir scroll do body quando sidebar está aberta */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  /* Ajustar logo dentro da sidebar */
+  .sidebar .logo {
+    max-width: 140px;
+  }
+
+  /* Ajustar margem do botão logout */
+  .logout-button {
+    margin-top: auto;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
   }
 }

@@ -30,7 +30,7 @@ def dashboard_admin(request):
         total_ordens = OrdemServico.objects.count()
         
         agendamentos_hoje = Agendamento.objects.filter(data_hora__date=date.today()).count()
-        servicos_andamento = OrdemServico.objects.filter(status='em_andamento').count()
+        servicos_andamento = Agendamento.objects.filter(status='em_andamento').count()
         agendamentos_pendentes = Agendamento.objects.filter(status='agendado').count()
         agendamentos_concluidos = Agendamento.objects.filter(status='concluido').count()
         

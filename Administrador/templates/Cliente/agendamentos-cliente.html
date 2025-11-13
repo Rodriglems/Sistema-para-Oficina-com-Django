@@ -5,7 +5,6 @@
 <main class="content">
   <div class="agendamentos-header">
     <h1>Meus Agendamentos</h1>
-    <p class="subtitle">Gerencie seus agendamentos ativos</p>
     <a href="{% url 'agendar-servico' %}" class="btn-novo-agendamento">Novo Agendamento</a>
   </div>
 
@@ -71,7 +70,7 @@
             {% if agendamento.status == 'agendado' %}
             <span class="badge-agendado">Agendado</span>
             {% elif agendamento.status == 'em_andamento' %}
-            <span class="badge-andamento">Em Andamento</span>
+            <span class="badge-andamento">Andamento</span>
             {% endif %}
           </td>
           <td class="td-center">

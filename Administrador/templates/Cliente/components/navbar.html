@@ -1,6 +1,20 @@
 {% load static %}
-<aside class="sidebar">
-  <img src="{% static 'image/Logo.png' %}" alt="Logo" class="logo" />
+
+<!-- Botão Hambúrguer (visível apenas em mobile) -->
+<button class="hamburger-menu" onclick="toggleSidebar()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<!-- Overlay para fechar o menu clicando fora -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <img src="{% static 'image/Logo.png' %}" alt="Logo" class="logo" />
+  </div>
   <nav>
     <ul>
       <li><a href="{% url 'dashboard-cliente' %}">Dashboard</a></li>
@@ -13,3 +27,13 @@
     </div>
   </nav>
 </aside>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.classList.toggle('sidebar-open');
+  }
+</script>
